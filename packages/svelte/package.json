@@ -1,0 +1,12 @@
+{
+	"name": "@fetch-frog/svelte",
+	"description": "Svelte specific implementation of fetch-frog",
+	"version": "0.0.1",
+	"private": false,
+	"type": "module",
+	"scripts": {},
+	"devDependencies": {},
+	"dependencies": {
+		"fetch-frog": "workspace:*"
+	}
+}

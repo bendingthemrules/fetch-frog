@@ -1,0 +1,42 @@
+{
+	"name": "fetch-frog",
+	"description": "Type safe api clients using OpenApi Spec",
+	"version": "0.0.1",
+	"private": false,
+	"type": "module",
+	"scripts": {
+		"generate": "openapi-typescript",
+		"cli:convert": "node ./bin/script.js convert",
+		"cli:generate": "node ./bin/script.js generate",
+		"test": "tsc --noEmit && vitest",
+		"test:types": "tsc --noEmit",
+		"coverage": "vitest run --coverage",
+		"build": "echo 'skipping build'"
+	},
+	"bin": {
+		"fetch-frog": "./bin/script.js"
+	},
+	"exports": {
+		".": "./index.ts",
+		"./types": "./types/index.ts"
+	},
+	"files": [
+		"index.ts",
+		"fetch-frog.ts",
+		"utils.ts",
+		"bin",
+		"types"
+	],
+	"devDependencies": {
+		"typescript": "^5.5.3",
+		"vitest": "^3.2.4"
+	},
+	"dependencies": {
+		"defu": "^6.1.4",
+		"ofetch": "^1.3.4",
+		"openapi-typescript": "6.7.5",
+		"openapi-typescript-helpers": "^0.0.7",
+		"swagger2openapi": "^7.0.8",
+		"yargs-parser": "^21.1.1"
+	}
+}
