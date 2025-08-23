@@ -1,4 +1,4 @@
-import type { FetchOptions } from "ofetch";
+import type { FetchOptions } from 'ofetch';
 import type {
 	FetchResponseData,
 	FetchResponseError,
@@ -6,9 +6,9 @@ import type {
 	MethodOption,
 	ParamsOption,
 	RequestBodyOption,
-} from "./utils";
+} from './utils.js';
 
-export type LiteFetchClient<Paths> = <
+export type FetchClient<Paths> = <
 	ReqT extends Extract<keyof Paths, string>,
 	Method extends
 		| Extract<keyof Paths[ReqT], string>
@@ -16,25 +16,25 @@ export type LiteFetchClient<Paths> = <
 	LowercasedMethod extends Lowercase<Method> extends keyof Paths[ReqT]
 		? Lowercase<Method>
 		: never,
-	DefaultMethod extends "get" extends LowercasedMethod
-		? "get"
+	DefaultMethod extends 'get' extends LowercasedMethod
+		? 'get'
 		: LowercasedMethod,
 	DataT = FetchResponseData<Paths[ReqT][DefaultMethod]>,
 	ErrorT = FetchResponseError<Paths[ReqT][DefaultMethod]>,
 	PickKeys extends KeysOf<DataT> = KeysOf<DataT>
 >(
 	url: ReqT,
-	options: LiteFetchOptions<Method, LowercasedMethod, Paths[ReqT], PickKeys>
+	options: FetchOptions<Method, LowercasedMethod, Paths[ReqT], PickKeys>
 ) => Promise<{ data: DataT; error: null } | { data: null; error: ErrorT }>;
 
-type LiteFetchOptions<
+type FetchOptions<
 	Method,
 	LowercasedMethod,
 	Params,
 	_PickKeys,
-	_Operation = "get" extends LowercasedMethod
-		? "get" extends keyof Params
-			? Params["get"]
+	_Operation = 'get' extends LowercasedMethod
+		? 'get' extends keyof Params
+			? Params['get']
 			: never
 		: LowercasedMethod extends keyof Params
 		? Params[LowercasedMethod]
@@ -42,4 +42,4 @@ type LiteFetchOptions<
 > = MethodOption<Method, Params> &
 	ParamsOption<_Operation> &
 	RequestBodyOption<_Operation> &
-	Omit<FetchOptions, "query" | "body" | "method">;
+	Omit<FetchOptions, 'query' | 'body' | 'method'>;

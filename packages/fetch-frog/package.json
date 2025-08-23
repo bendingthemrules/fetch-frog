@@ -16,16 +16,27 @@
 	"bin": {
 		"fetch-frog": "./bin/script.js"
 	},
+	"main": "./index.js",
+	"types": "./index.d.ts",
 	"exports": {
-		".": "./index.ts",
-		"./types": "./types/index.ts"
+		".": {
+			"types": "./index.d.ts",
+			"import": "./index.js"
+		},
+		"./types": {
+			"types": "./types/index.d.ts",
+			"import": "./types/index.js"
+		},
+		"./utils": {
+			"types": "./utils.d.ts",
+			"import": "./utils.js"
+		}
 	},
 	"files": [
-		"index.ts",
-		"fetch-frog.ts",
-		"utils.ts",
+		"*.js",
+		"*.d.ts",
 		"bin",
-		"types"
+		"types/**/*.d.ts"
 	],
 	"devDependencies": {
 		"typescript": "^5.5.3",

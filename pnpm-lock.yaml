@@ -45,6 +45,9 @@ importers:
 
   packages/nuxt:
     dependencies:
+      defu:
+        specifier: ^6.1.4
+        version: 6.1.4
       fetch-frog:
         specifier: workspace:*
         version: link:../fetch-frog

@@ -9,7 +9,7 @@
         <h1 align="center"><b>Fetch Frog</b></h1>
     </center>
     <center>
-        <p align="center">A fully typed ofetch and useFetch wrapper for Nuxt using Open Api Spec</p>
+        <p align="center">Type safe api clients using OpenApi Specs</p>
     </center>
 </div>
 
@@ -63,11 +63,41 @@ const { data } = await apiClient("/auth/login", {
 
 ## Examples
 
+An example for creating a reusable wrapper composable, useful for authentication headers for example, can be found in [examples/composable-wrapper](./example/README.md#composable-wrapper)
+
+Storing the body / path- or query parameters / response with types requires extracting a type from the generated openapi ts definitions. Some type helpers are exposed from fetch-frog to help with this: `ExtractResponse, ExtractBody, ExtractQueryParams, ExtractPathParams` where QueryParams and PathParams are reactive to help with UseFetch. For example usage, see [examples/type-extraction-helpers](./example/README.md#type-extraction-helpers)
+
+### One-off fetching (ofetch)
+
+```ts
+// src/lib/apiClient.ts
+import { createFetchClient } from "fetch-frog";
+import type { paths } from "~/types/api/v1"; // generated api types
+
+export const apiClient = createFetchClient<paths>(
+	"https://petstore3.swagger.io/api/v3",
+	{}
+);
+```
+
+```ts
+// src/lib/index.ts
+import { apiClient } from "$lib/apiClient";
+
+const { data } = await apiClient("/pet/{petId}", {
+	path: {
+		petId: "frog",
+	},
+});
+
+console.log(data);
+```
+
 ### Reactive fetching with SSR sync (Nuxt useFetch)
 
 ```ts
 // src/composables/apiClients.ts
-import { createUseFetchClient } from "fetch-frog";
+import { createUseFetchClient } from "@fetch-frog/nuxt";
 import type { paths } from "~/types/api/v1"; // generated api types
 
 export const reactiveApiClient = createUseFetchClient<paths>(
@@ -88,36 +118,6 @@ const { data } = await reactiveApiClient("/pet/{petId}", {
 
 console.log(data.value);
 ```
-
-### Once off fetching without SSR sync (ofetch)
-
-```ts
-// src/composables/apiClients.ts
-import { createLiteFetchClient } from "fetch-frog";
-import type { paths } from "~/types/api/v1"; // generated api types
-
-export const liteApiClient = createLiteFetchClient<paths>(
-	"https://petstore3.swagger.io/api/v3",
-	{}
-);
-```
-
-```ts
-// src/pages/index.vue
-import { liteApiClient } from "~/composables/apiClient";
-
-const { data } = await liteApiClient("/pet/{petId}", {
-	path: {
-		petId: "frog",
-	},
-});
-
-console.log(data);
-```
-
-An example for creating a reusable wrapper composable, useful for authentication headers for example, can be found in [examples/composable-wrapper](./example/README.md#composable-wrapper)
-
-Storing the body / path- or query parameters / response with types requires extracting a type from the generated openapi ts definitions. Some type helpers are exposed from fetch-frog to help with this: `ExtractResponse, ExtractBody, ExtractQueryParams, ExtractPathParams` where QueryParams and PathParams are reactive to help with UseFetch. For example usage, see [examples/type-extraction-helpers](./example/README.md#type-extraction-helpers)
 
 ## Cli tools
 

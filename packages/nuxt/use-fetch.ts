@@ -1,7 +1,7 @@
 import { useFetch, type UseFetchOptions } from 'nuxt/app';
 import { computed, toValue } from 'vue';
 import { defu } from 'defu';
-import type { UseFetchClient } from './types/usefetch';
+import type { UseFetchClient } from './types/use-fetch';
 import { fillPath } from './utils';
 import { containsFileOrBlob, formdataBodySerializer } from 'fetch-frog/utils';
 
