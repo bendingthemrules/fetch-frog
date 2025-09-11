@@ -13,6 +13,11 @@
     </center>
 </div>
 
+## Framework Integrations
+
+-   **[Nuxt](./packages/nuxt/README.md)** - SSR-ready reactive fetching with `useFetch` integration
+-   **[Svelte](./packages/svelte/README.md)** - Svelte and SvelteKit optimized implementation _(coming soon)_
+
 ## Usage
 
 ### Single schema
@@ -29,24 +34,23 @@ For the full list of options, see [openapi-ts.pages.dev/cli](https://openapi-ts.
 
 ## Handling formdata
 
-Fetch frog automaticcaly checks for files and blobs inside the request body and convert the body to formdata if it finds any.
+Fetch Frog provides a `formdataBodySerializer` util function to convert flat objects into formdata while keeping the object type.
 
 ```ts
 import { apiClient } from "~/composables/apiClient";
+import { formdataBodySerializer } from "fetch-frog";
 
 const { data } = await apiClient("/pet/{petId}/uploadImage", {
 	path: {
 		petId: "frog",
 	},
 	method: "POST",
-	body: {
+	body: formdataBodySerializer({
 		additionalMetadata: "string",
 		file: new File([""], "frog.png", { type: "image/png" }),
-	},
+	}),
 });
 ```
-
-If you want to manually convert the body to formdata, you can use the `formdataBodySerializer` function.
 
 ```ts
 import { apiClient } from "~/composables/apiClient";
@@ -61,13 +65,42 @@ const { data } = await apiClient("/auth/login", {
 });
 ```
 
+### Automatic FormData conversion
+
+Fetch Frog also provides a `containsFileOrBlob` utility that can detect when your request body contains File or Blob objects, enabling automatic conversion to FormData.
+
+```ts
+import { containsFileOrBlob, formdataBodySerializer } from "fetch-frog";
+
+const requestBody = {
+	name: "Profile picture",
+	file: new File([""], "avatar.jpg", { type: "image/jpeg" }),
+	metadata: "user avatar",
+};
+
+// Check if the body contains files/blobs
+if (containsFileOrBlob(requestBody)) {
+	// Auto-convert to FormData while preserving types
+	const formData = formdataBodySerializer(requestBody);
+
+	// Use in your request
+	const { data } = await apiClient("/user/avatar", {
+		method: "POST",
+		body: formData,
+	});
+}
+```
+
+> [!NOTE]
+> If you're using a framework like Nuxt or Svelte, consider using the framework-specific implementations of `containsFileOrBlob` and `formdataBodySerializer`. See [Framework Integrations](#framework-integrations) for more details.
+
 ## Examples
 
 An example for creating a reusable wrapper composable, useful for authentication headers for example, can be found in [examples/composable-wrapper](./example/README.md#composable-wrapper)
 
 Storing the body / path- or query parameters / response with types requires extracting a type from the generated openapi ts definitions. Some type helpers are exposed from fetch-frog to help with this: `ExtractResponse, ExtractBody, ExtractQueryParams, ExtractPathParams` where QueryParams and PathParams are reactive to help with UseFetch. For example usage, see [examples/type-extraction-helpers](./example/README.md#type-extraction-helpers)
 
-### One-off fetching (ofetch)
+### One-off fetching
 
 ```ts
 // src/lib/apiClient.ts
@@ -93,31 +126,7 @@ const { data } = await apiClient("/pet/{petId}", {
 console.log(data);
 ```
 
-### Reactive fetching with SSR sync (Nuxt useFetch)
-
-```ts
-// src/composables/apiClients.ts
-import { createUseFetchClient } from "@fetch-frog/nuxt";
-import type { paths } from "~/types/api/v1"; // generated api types
-
-export const reactiveApiClient = createUseFetchClient<paths>(
-	"https://petstore3.swagger.io/api/v3",
-	{}
-);
-```
-
-```ts
-// src/pages/index.vue
-import { reactiveApiClient } from "~/composables/apiClient";
-
-const { data } = await reactiveApiClient("/pet/{petId}", {
-	path: {
-		petId: "frog",
-	},
-});
-
-console.log(data.value);
-```
+This uses ofetch under the hood.
 
 ## Cli tools
 

@@ -1,10 +1,6 @@
 import { defu } from 'defu';
 import { ofetch } from 'ofetch';
-import {
-	containsFileOrBlob,
-	fillPath,
-	formdataBodySerializer,
-} from './utils.js';
+import { fillPath } from './utils.js';
 
 /**
  * Create a lite fetch client
@@ -35,10 +31,6 @@ import {
 export function createFetchClient(baseUrl, defaults) {
 	return (/** @type {string} */ url, /** @type {any} */ options = {}) => {
 		const filledPath = fillPath(baseUrl + url, options.path);
-
-		if (containsFileOrBlob(options.body)) {
-			options.body = formdataBodySerializer(options.body);
-		}
 
 		const merged = defu(options, defaults);
 
