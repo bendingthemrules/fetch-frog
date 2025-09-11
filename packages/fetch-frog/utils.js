@@ -9,8 +9,6 @@ export function formdataBodySerializer(body) {
 
 	if (!body) return /** @type {T} */ (/** @type {unknown} */ (formData));
 
-	// TODO: handle nested objects
-
 	for (const [k, v] of Object.entries(body)) {
 		if (Array.isArray(v)) {
 			for (const item of v) {
