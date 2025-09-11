@@ -4,6 +4,7 @@
 	"version": "0.0.1",
 	"private": false,
 	"type": "module",
+	"license": "MIT",
 	"scripts": {},
 	"peerDependencies": {
 		"nuxt": "^3.0.0",
