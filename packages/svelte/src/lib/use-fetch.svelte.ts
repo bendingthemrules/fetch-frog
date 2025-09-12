@@ -17,6 +17,7 @@ type ReactiveApiOptions = {
 	watch?: boolean;
 };
 
+/** @deprecated use createReactiveApi instead */
 export class ReactiveApi<T extends ApiResponse> {
 	status = $state<LoadingState>('loading');
 	data: T['data'] | null = $state(null);
@@ -68,13 +69,30 @@ export class ReactiveApi<T extends ApiResponse> {
 	};
 }
 
-/** @deprecated use ReactiveApi instead*/
-export function createReactiveApi<T extends ApiResponse>(promise: () => Promise<T>) {
+export function createReactiveApi<T extends ApiResponse>(
+	promise: () => Promise<T>,
+	options: ReactiveApiOptions = {}
+) {
 	let status = $state<LoadingState>('loading');
 	let data: T['data'] | null = $state(null);
 	let error: T['error'] | null = $state(null);
 
+	const defaultOptions: ReactiveApiOptions = {
+		immediate: true,
+		watch: true
+	};
+	options = defu(options, defaultOptions);
+
 	$effect(() => {
+		if (!options.watch) {
+			return;
+		}
+
+		if (!options.immediate) {
+			options.immediate = true;
+			return;
+		}
+
 		refresh();
 	});
 
@@ -94,7 +112,54 @@ export function createReactiveApi<T extends ApiResponse>(promise: () => Promise<
 	}
 
 	return {
-		value: () => ({ data, error, status }),
-		refresh
+		get data() {
+			return data;
+		},
+		get error() {
+			return error;
+		},
+		get status() {
+			return status;
+		},
+		refresh,
+
+		// oxlint-disable-next-line no-thenable
+		then(resolve: (value: T['data'] | null) => void, reject: (reason: unknown) => void) {
+			(async () => {
+				try {
+					await refresh();
+
+					status = 'success';
+
+					resolve({
+						get data() {
+							return data;
+						},
+						get error() {
+							return error;
+						},
+						get status() {
+							return status;
+						},
+						refresh
+					});
+				} catch (error) {
+					status = 'error';
+					reject({
+						get data() {
+							return null;
+						},
+						get error() {
+							return error;
+						},
+						get status() {
+							return status;
+						},
+						refresh
+					});
+				}
+			})();
+			// initialLoad.then(() => resolve(api)).catch(reject);
+		}
 	};
 }
