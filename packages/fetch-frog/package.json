@@ -8,37 +8,37 @@
 		"generate": "openapi-typescript",
 		"cli:convert": "node ./bin/script.js convert",
 		"cli:generate": "node ./bin/script.js generate",
-		"test": "tsc --noEmit && vitest",
-		"test:types": "tsc --noEmit",
+		"test": "pnpm test:types && vitest run",
+		"test:types": "tsc -p tsconfig.json --noEmit",
 		"coverage": "vitest run --coverage",
-		"build": "echo 'skipping build'"
+		"build": "tsc -p tsconfig.build.json"
 	},
 	"bin": {
 		"fetch-frog": "./bin/script.js"
 	},
-	"main": "./index.js",
-	"types": "./index.d.ts",
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
 	"exports": {
 		".": {
-			"types": "./index.d.ts",
-			"import": "./index.js"
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js"
 		},
 		"./types": {
-			"types": "./types/index.d.ts",
-			"import": "./types/index.js"
+			"types": "./dist/types/index.d.ts",
+			"import": "./dist/types/index.js"
 		},
 		"./utils": {
-			"types": "./utils.d.ts",
-			"import": "./utils.js"
+			"types": "./dist/utils.d.ts",
+			"import": "./dist/utils.js"
 		}
 	},
 	"files": [
-		"*.js",
-		"*.d.ts",
-		"bin",
-		"types/**/*.d.ts"
+		"dist/**",
+		"bin"
 	],
 	"devDependencies": {
+		"@vitest/coverage-v8": "3.2.4",
+		"typescript": "^5.0.0",
 		"vitest": "^3.2.4"
 	},
 	"dependencies": {

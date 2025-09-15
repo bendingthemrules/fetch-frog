@@ -1,0 +1,17 @@
+{
+	"extends": "./tsconfig.json",
+	"compilerOptions": {
+		"outDir": "dist",
+		"declaration": true,
+		"declarationMap": true,
+		"sourceMap": true,
+		"inlineSources": true,
+		"emitDeclarationOnly": false,
+		"noEmit": false,
+		"stripInternal": true,
+		"importsNotUsedAsValues": "remove",
+		"newLine": "lf"
+	},
+	"include": ["index.ts", "fetch-frog.ts", "utils.ts", "types/**/*.ts"],
+	"exclude": ["**/*.test.ts", "test/**/*", "node_modules", "dist"]
+}

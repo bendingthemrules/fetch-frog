@@ -18,3 +18,5 @@ export type {
 	PickFrom,
 	RequestBodyOption,
 } from './types/utils.js';
+
+export type { FetchClient } from './types/fetch-frog.js';

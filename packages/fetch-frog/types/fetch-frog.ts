@@ -1,4 +1,4 @@
-import type { FetchOptions } from 'ofetch';
+import type { FetchOptions as OfetchFetchOptions } from 'ofetch';
 import type {
 	FetchResponseData,
 	FetchResponseError,
@@ -24,10 +24,10 @@ export type FetchClient<Paths> = <
 	PickKeys extends KeysOf<DataT> = KeysOf<DataT>
 >(
 	url: ReqT,
-	options: FetchOptions<Method, LowercasedMethod, Paths[ReqT], PickKeys>
+	options: ClientFetchOptions<Method, LowercasedMethod, Paths[ReqT], PickKeys>
 ) => Promise<{ data: DataT; error: null } | { data: null; error: ErrorT }>;
 
-type FetchOptions<
+type ClientFetchOptions<
 	Method,
 	LowercasedMethod,
 	Params,
@@ -42,4 +42,4 @@ type FetchOptions<
 > = MethodOption<Method, Params> &
 	ParamsOption<_Operation> &
 	RequestBodyOption<_Operation> &
-	Omit<FetchOptions, 'query' | 'body' | 'method'>;
+	Omit<OfetchFetchOptions, 'query' | 'body' | 'method'>;

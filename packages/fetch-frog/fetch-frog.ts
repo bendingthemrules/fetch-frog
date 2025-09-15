@@ -1,6 +1,7 @@
 import { defu } from 'defu';
-import { ofetch } from 'ofetch';
+import { type FetchOptions, ofetch } from 'ofetch';
 import { fillPath } from './utils.js';
+import type { FetchClient } from './types/fetch-frog.js';
 
 /**
  * Create a lite fetch client
@@ -17,19 +18,20 @@ import { fillPath } from './utils.js';
  * });
  *
  * if (error) {
- * 	 console.log(error)
+ * 	 console.error(error)
  *   return
  * } else {
- * 	 console.log(data)
+ * 	 console.info(data)
  * }
  * ```
- * @template Paths
  * @param {string} baseUrl - The base URL for the API
  * @param {import('ofetch').FetchOptions} defaults - Default fetch options
- * @returns {import('./types/fetch-frog').FetchClient<Paths>} - The fetch client
  */
-export function createFetchClient(baseUrl, defaults) {
-	return (/** @type {string} */ url, /** @type {any} */ options = {}) => {
+export function createFetchClient<Paths>(
+	baseUrl: string,
+	defaults: FetchOptions
+): FetchClient<Paths> {
+	return (url: string, options: Record<string, any> = {}) => {
 		const filledPath = fillPath(baseUrl + url, options.path);
 
 		const merged = defu(options, defaults);
@@ -44,7 +46,10 @@ export function createFetchClient(baseUrl, defaults) {
  * @param {import('ofetch').FetchOptions} options - Fetch options
  * @returns {Promise<{ data: any; error: null } | { data: null; error: any }>} - Result object with data or error
  */
-async function fetchCall(url, options) {
+async function fetchCall(
+	url: string,
+	options: FetchOptions
+): Promise<{ data: any; error: null } | { data: null; error: any }> {
 	try {
 		const res = await ofetch(url, options);
 		return { data: res, error: null };
