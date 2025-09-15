@@ -48,5 +48,8 @@
 		"openapi-typescript-helpers": "^0.0.7",
 		"swagger2openapi": "^7.0.8",
 		"yargs-parser": "^21.1.1"
+	},
+	"publishConfig": {
+		"access": "public"
 	}
 }
