@@ -1,5 +1,18 @@
 <script lang="ts">
+	import { createFetchClient } from 'fetch-frog';
 	import { createReactiveApi } from '$lib/use-fetch.svelte.js';
+	import type { paths } from '$lib/petstore.ts';
+	import { onMount } from 'svelte';
+
+	const apiClient = createFetchClient<paths>('', {});
+
+	const useApiClient = createReactiveApi(() =>
+		apiClient('/pet/{petId}', {
+			path: {
+				petId: 1
+			}
+		})
+	);
 
 	async function mockCall({ count }: { count: number }) {
 		await new Promise((resolve) => setTimeout(resolve, 100));
@@ -10,6 +23,14 @@
 
 	const api = createReactiveApi(() => mockCall({ count }));
 	const { data, error } = $derived(api);
+
+	onMount(async () => {
+		const { data } = await apiClient('/pet/{petId}', {
+			path: {
+				petId: 1
+			}
+		});
+	});
 </script>
 
 <h1>Welcome to your library project</h1>

@@ -17,6 +17,13 @@ type ReactiveApiOptions = {
 	watch?: boolean;
 };
 
+export type ReactiveApiFacade<T extends ApiResponse> = {
+	data: T['data'] | null;
+	error: T['error'] | null;
+	status: LoadingState;
+	refresh: () => Promise<void>;
+};
+
 /** @deprecated use createReactiveApi instead */
 export class ReactiveApi<T extends ApiResponse> {
 	status = $state<LoadingState>('loading');
@@ -72,7 +79,7 @@ export class ReactiveApi<T extends ApiResponse> {
 export function createReactiveApi<T extends ApiResponse>(
 	promise: () => Promise<T>,
 	options: ReactiveApiOptions = {}
-) {
+): ReactiveApiFacade<T> & Promise<ReactiveApiFacade<T>> {
 	let status = $state<LoadingState>('loading');
 	let data: T['data'] | null = $state(null);
 	let error: T['error'] | null = $state(null);
@@ -124,7 +131,7 @@ export function createReactiveApi<T extends ApiResponse>(
 		refresh,
 
 		// oxlint-disable-next-line no-thenable
-		then(resolve: (value: T['data'] | null) => void, reject: (reason: unknown) => void) {
+		then(resolve: (value: ReactiveApiFacade<T>) => void, reject: (reason: unknown) => void) {
 			(async () => {
 				try {
 					await refresh();
@@ -142,7 +149,7 @@ export function createReactiveApi<T extends ApiResponse>(
 							return status;
 						},
 						refresh
-					});
+					} as ReactiveApiFacade<T>);
 				} catch (error) {
 					status = 'error';
 					reject({
@@ -159,7 +166,6 @@ export function createReactiveApi<T extends ApiResponse>(
 					});
 				}
 			})();
-			// initialLoad.then(() => resolve(api)).catch(reject);
 		}
-	};
+	} as ReactiveApiFacade<T> & Promise<ReactiveApiFacade<T>>;
 }
