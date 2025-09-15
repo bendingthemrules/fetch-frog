@@ -32,12 +32,40 @@ Supports both json, yml, urls and local file paths
 
 For the full list of options, see [openapi-ts.pages.dev/cli](https://openapi-ts.pages.dev/cli)
 
+## Using the fetch client
+
+```ts
+// src/lib/apiClient.ts
+import { createFetchClient } from "fetch-frog";
+import type { paths } from "$lib/types/api/v1"; // generated api types
+
+export const apiClient = createFetchClient<paths>(
+	"https://petstore3.swagger.io/api/v3",
+	{}
+);
+```
+
+```ts
+// src/lib/index.ts
+import { apiClient } from "$lib/apiClient";
+
+const { data } = await apiClient("/pet/{petId}", {
+	path: {
+		petId: "frog",
+	},
+});
+
+console.log(data);
+```
+
+This uses [ofetch](https://github.com/unjs/ofetch) under the hood.
+
 ## Handling formdata
 
 Fetch Frog provides a `formdataBodySerializer` util function to convert flat objects into formdata while keeping the object type.
 
 ```ts
-import { apiClient } from "~/composables/apiClient";
+import { apiClient } from "$lib/apiClient";
 import { formdataBodySerializer } from "fetch-frog";
 
 const { data } = await apiClient("/pet/{petId}/uploadImage", {
@@ -53,7 +81,7 @@ const { data } = await apiClient("/pet/{petId}/uploadImage", {
 ```
 
 ```ts
-import { apiClient } from "~/composables/apiClient";
+import { apiClient } from "$lib/apiClient";
 import { formdataBodySerializer } from "fetch-frog";
 
 const { data } = await apiClient("/auth/login", {
@@ -100,39 +128,11 @@ An example for creating a reusable wrapper composable, useful for authentication
 
 Storing the body / path- or query parameters / response with types requires extracting a type from the generated openapi ts definitions. Some type helpers are exposed from fetch-frog to help with this: `ExtractResponse, ExtractBody, ExtractQueryParams, ExtractPathParams` where QueryParams and PathParams are reactive to help with UseFetch. For example usage, see [examples/type-extraction-helpers](./example/README.md#type-extraction-helpers)
 
-### One-off fetching
-
-```ts
-// src/lib/apiClient.ts
-import { createFetchClient } from "fetch-frog";
-import type { paths } from "~/types/api/v1"; // generated api types
-
-export const apiClient = createFetchClient<paths>(
-	"https://petstore3.swagger.io/api/v3",
-	{}
-);
-```
-
-```ts
-// src/lib/index.ts
-import { apiClient } from "$lib/apiClient";
-
-const { data } = await apiClient("/pet/{petId}", {
-	path: {
-		petId: "frog",
-	},
-});
-
-console.log(data);
-```
-
-This uses ofetch under the hood.
-
 ## Cli tools
 
 ### Convert schema version
 
-Convert a schema from 1.x or 2.x to 3.0.1 using the swagger API
+Convert a schema from 1.x or 2.x to 3.0.1 using swagger2openapi
 
 <!-- https://editor.swagger.io/?url=https://petstore.swagger.io/v2/swagger.yaml -->
 
