@@ -1,0 +1,10 @@
+{
+  "mode": "pre",
+  "tag": "beta",
+  "initialVersions": {
+    "fetch-frog": "0.0.1",
+    "@fetch-frog/nuxt": "0.0.1",
+    "@fetch-frog/svelte": "0.0.1"
+  },
+  "changesets": []
+}
