@@ -1,7 +1,7 @@
 {
 	"name": "@fetch-frog/nuxt",
 	"description": "Nuxt specific implementation of fetch-frog",
-	"version": "0.0.1",
+	"version": "0.0.2-beta.0",
 	"private": false,
 	"type": "module",
 	"license": "MIT",
