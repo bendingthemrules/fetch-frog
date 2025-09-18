@@ -1,18 +1,19 @@
-import fs from "node:fs";
-import { execSync } from "node:child_process";
+import fs from 'node:fs';
+import path from 'node:path';
+import { execSync } from 'node:child_process';
+import { expect, it, describe } from 'vitest';
 
-import { expect, test, describe } from "vitest";
-
-describe("cli", () => {
-	test("should generate open api spec v2 types", () => {
+describe('cli', () => {
+	it('should generate open api spec v2 types', () => {
 		const currentDir = import.meta.dirname;
 		const outputPath = `${currentDir}/output.d.ts`;
+		const binPath = path.resolve(currentDir, '../bin/script.js');
 
 		try {
 			fs.rmSync(outputPath, { force: true });
 
 			const output = execSync(
-				`node bin/script.js generate ${currentDir}/openApi.v2.json -o ${outputPath}`
+				`node ${binPath} generate ${currentDir}/openApi.v2.json -o ${outputPath}`
 			).toString();
 			console.log(output);
 
@@ -25,15 +26,16 @@ describe("cli", () => {
 		}
 	});
 
-	test("should generate open api spec v3 types", () => {
+	it('should generate open api spec v3 types', () => {
 		const currentDir = import.meta.dirname;
 		const outputPath = `${currentDir}/output.d.ts`;
+		const binPath = path.resolve(currentDir, '../bin/script.js');
 
 		try {
 			fs.rmSync(outputPath, { force: true });
 
 			const output = execSync(
-				`node bin/script.js generate ${currentDir}/openApi.v3.json -o ${outputPath}`
+				`node ${binPath} generate ${currentDir}/openApi.v3.json -o ${outputPath}`
 			).toString();
 			console.log(output);
 

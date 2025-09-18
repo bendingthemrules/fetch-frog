@@ -5,7 +5,7 @@ export type {
 	ParamsOption,
 	PickFrom,
 	RequestBodyOption,
-} from './utils';
+} from './utils.js';
 
 export type {
 	ExtractResponse,
@@ -14,4 +14,6 @@ export type {
 	ExtractQueryParams,
 	ExtractLitePathParams,
 	ExtractLiteQueryParams,
-} from './extractors';
+} from './extractors.js';
+
+export type { FetchClient } from './fetch-frog.js';

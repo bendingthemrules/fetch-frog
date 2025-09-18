@@ -8,35 +8,48 @@
 		"generate": "openapi-typescript",
 		"cli:convert": "node ./bin/script.js convert",
 		"cli:generate": "node ./bin/script.js generate",
-		"test": "tsc --noEmit && vitest",
-		"test:types": "tsc --noEmit",
+		"test": "pnpm test:types && vitest run",
+		"test:types": "tsc -p tsconfig.json --noEmit",
 		"coverage": "vitest run --coverage",
-		"build": "echo 'skipping build'"
+		"build": "tsc -p tsconfig.build.json"
 	},
 	"bin": {
 		"fetch-frog": "./bin/script.js"
 	},
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
 	"exports": {
-		".": "./index.ts",
-		"./types": "./types/index.ts"
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js"
+		},
+		"./types": {
+			"types": "./dist/types/index.d.ts",
+			"import": "./dist/types/index.js"
+		},
+		"./utils": {
+			"types": "./dist/utils.d.ts",
+			"import": "./dist/utils.js"
+		}
 	},
 	"files": [
-		"index.ts",
-		"fetch-frog.ts",
-		"utils.ts",
-		"bin",
-		"types"
+		"dist/**",
+		"bin"
 	],
 	"devDependencies": {
-		"typescript": "^5.5.3",
+		"@vitest/coverage-v8": "3.2.4",
+		"typescript": "^5.0.0",
 		"vitest": "^3.2.4"
 	},
 	"dependencies": {
 		"defu": "^6.1.4",
-		"ofetch": "^1.3.4",
+		"ofetch": "^1.4.1",
 		"openapi-typescript": "6.7.5",
 		"openapi-typescript-helpers": "^0.0.7",
 		"swagger2openapi": "^7.0.8",
 		"yargs-parser": "^21.1.1"
+	},
+	"publishConfig": {
+		"access": "public"
 	}
 }

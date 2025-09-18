@@ -8,7 +8,6 @@ import type {
 	OperationRequestBodyContent,
 } from 'openapi-typescript-helpers';
 
-// based on nuxt/dist/app/composables/asyncData
 export type PickFrom<T, K extends Array<string>> = T extends Array<any>
 	? T
 	: T extends Record<string, any>

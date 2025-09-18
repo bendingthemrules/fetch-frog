@@ -1,15 +1,15 @@
 import { defu } from 'defu';
-import { ofetch, type FetchOptions } from 'ofetch';
-import type { LiteFetchClient } from './types/fetch-frog';
-import { containsFileOrBlob, fillPath, formdataBodySerializer } from './utils';
+import { type FetchOptions, ofetch } from 'ofetch';
+import { fillPath } from './utils.js';
+import type { FetchClient } from './types/fetch-frog.js';
 
 /**
  * Create a lite fetch client
  *
  * @example
- * ```ts
- * const liteFetch = createLiteFetchClient<paths>("https://petstore.swagger.io/v2", {});
- * const { data, error } = await liteFetch("/pet", {
+ * ```js
+ * const fetchClient = createFetchClient("https://petstore.swagger.io/v2", {});
+ * const { data, error } = await fetchClient("/pet", {
  * 	method: "POST",
  * 	body: {
  * 		name: "doggie",
@@ -18,31 +18,35 @@ import { containsFileOrBlob, fillPath, formdataBodySerializer } from './utils';
  * });
  *
  * if (error) {
- * 	 console.log(error)
+ * 	 console.error(error)
  *   return
  * } else {
- * 	 console.log(data)
+ * 	 console.info(data)
  * }
  * ```
+ * @param {string} baseUrl - The base URL for the API
+ * @param {import('ofetch').FetchOptions} defaults - Default fetch options
  */
-export function createLiteFetchClient<Paths>(
+export function createFetchClient<Paths>(
 	baseUrl: string,
 	defaults: FetchOptions
-): LiteFetchClient<Paths> {
-	return (url: string, options: any) => {
+): FetchClient<Paths> {
+	return (url: string, options: Record<string, any> = {}) => {
 		const filledPath = fillPath(baseUrl + url, options.path);
-
-		if (containsFileOrBlob(options.body)) {
-			options.body = formdataBodySerializer(options.body);
-		}
 
 		const merged = defu(options, defaults);
 
-		return liteFetchCall(filledPath, merged);
+		return fetchCall(filledPath, merged);
 	};
 }
 
-async function liteFetchCall(
+/**
+ * Internal function to handle the actual fetch call
+ * @param {string} url - The URL to fetch
+ * @param {import('ofetch').FetchOptions} options - Fetch options
+ * @returns {Promise<{ data: any; error: null } | { data: null; error: any }>} - Result object with data or error
+ */
+async function fetchCall(
 	url: string,
 	options: FetchOptions
 ): Promise<{ data: any; error: null } | { data: null; error: any }> {

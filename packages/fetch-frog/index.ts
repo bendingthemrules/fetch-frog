@@ -1,16 +1,5 @@
-import type {
-	ExtractResponse,
-	ExtractBody,
-	ExtractPathParams,
-	ExtractQueryParams,
-	ExtractLitePathParams,
-	ExtractLiteQueryParams,
-} from './types/extractors';
-import { formdataBodySerializer } from './utils';
-
-import { createLiteFetchClient } from './fetch-frog';
-
-export { formdataBodySerializer, createLiteFetchClient };
+export { formdataBodySerializer } from './utils.js';
+export { createFetchClient } from './fetch-frog.js';
 
 export type {
 	ExtractResponse,
@@ -19,4 +8,15 @@ export type {
 	ExtractQueryParams,
 	ExtractLitePathParams,
 	ExtractLiteQueryParams,
-};
+} from './types/extractors.js';
+
+export type {
+	FetchResponseData,
+	FetchResponseError,
+	KeysOf,
+	ParamsOption,
+	PickFrom,
+	RequestBodyOption,
+} from './types/utils.js';
+
+export type { FetchClient } from './types/fetch-frog.js';

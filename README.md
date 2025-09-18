@@ -9,9 +9,14 @@
         <h1 align="center"><b>Fetch Frog</b></h1>
     </center>
     <center>
-        <p align="center">A fully typed ofetch and useFetch wrapper for Nuxt using Open Api Spec</p>
+        <p align="center">Type safe api clients using OpenApi Specs</p>
     </center>
 </div>
+
+## Framework Integrations
+
+-   **[Nuxt](./packages/nuxt/README.md)** - SSR-ready reactive fetching with `useFetch` integration
+-   **[Svelte](./packages/svelte/README.md)** - Svelte and SvelteKit optimized implementation _(coming soon)_
 
 ## Usage
 
@@ -27,29 +32,56 @@ Supports both json, yml, urls and local file paths
 
 For the full list of options, see [openapi-ts.pages.dev/cli](https://openapi-ts.pages.dev/cli)
 
-## Handling formdata
-
-Fetch frog automaticcaly checks for files and blobs inside the request body and convert the body to formdata if it finds any.
+## Using the fetch client
 
 ```ts
-import { apiClient } from "~/composables/apiClient";
+// src/lib/apiClient.ts
+import { createFetchClient } from "fetch-frog";
+import type { paths } from "$lib/types/api/v1"; // generated api types
+
+export const apiClient = createFetchClient<paths>(
+	"https://petstore3.swagger.io/api/v3",
+	{}
+);
+```
+
+```ts
+// src/lib/index.ts
+import { apiClient } from "$lib/apiClient";
+
+const { data } = await apiClient("/pet/{petId}", {
+	path: {
+		petId: "frog",
+	},
+});
+
+console.log(data);
+```
+
+This uses [ofetch](https://github.com/unjs/ofetch) under the hood.
+
+## Handling formdata
+
+Fetch Frog provides a `formdataBodySerializer` util function to convert flat objects into formdata while keeping the object type.
+
+```ts
+import { apiClient } from "$lib/apiClient";
+import { formdataBodySerializer } from "fetch-frog";
 
 const { data } = await apiClient("/pet/{petId}/uploadImage", {
 	path: {
 		petId: "frog",
 	},
 	method: "POST",
-	body: {
+	body: formdataBodySerializer({
 		additionalMetadata: "string",
 		file: new File([""], "frog.png", { type: "image/png" }),
-	},
+	}),
 });
 ```
 
-If you want to manually convert the body to formdata, you can use the `formdataBodySerializer` function.
-
 ```ts
-import { apiClient } from "~/composables/apiClient";
+import { apiClient } from "$lib/apiClient";
 import { formdataBodySerializer } from "fetch-frog";
 
 const { data } = await apiClient("/auth/login", {
@@ -61,59 +93,36 @@ const { data } = await apiClient("/auth/login", {
 });
 ```
 
+### Automatic FormData conversion
+
+Fetch Frog also provides a `containsFileOrBlob` utility that can detect when your request body contains File or Blob objects, enabling automatic conversion to FormData.
+
+```ts
+import { containsFileOrBlob, formdataBodySerializer } from "fetch-frog";
+
+const requestBody = {
+	name: "Profile picture",
+	file: new File([""], "avatar.jpg", { type: "image/jpeg" }),
+	metadata: "user avatar",
+};
+
+// Check if the body contains files/blobs
+if (containsFileOrBlob(requestBody)) {
+	// Auto-convert to FormData while preserving types
+	const formData = formdataBodySerializer(requestBody);
+
+	// Use in your request
+	const { data } = await apiClient("/user/avatar", {
+		method: "POST",
+		body: formData,
+	});
+}
+```
+
+> [!NOTE]
+> If you're using a framework like Nuxt or Svelte, consider using the framework-specific implementations of `containsFileOrBlob` and `formdataBodySerializer`. See [Framework Integrations](#framework-integrations) for more details.
+
 ## Examples
-
-### Reactive fetching with SSR sync (Nuxt useFetch)
-
-```ts
-// src/composables/apiClients.ts
-import { createUseFetchClient } from "fetch-frog";
-import type { paths } from "~/types/api/v1"; // generated api types
-
-export const reactiveApiClient = createUseFetchClient<paths>(
-	"https://petstore3.swagger.io/api/v3",
-	{}
-);
-```
-
-```ts
-// src/pages/index.vue
-import { reactiveApiClient } from "~/composables/apiClient";
-
-const { data } = await reactiveApiClient("/pet/{petId}", {
-	path: {
-		petId: "frog",
-	},
-});
-
-console.log(data.value);
-```
-
-### Once off fetching without SSR sync (ofetch)
-
-```ts
-// src/composables/apiClients.ts
-import { createLiteFetchClient } from "fetch-frog";
-import type { paths } from "~/types/api/v1"; // generated api types
-
-export const liteApiClient = createLiteFetchClient<paths>(
-	"https://petstore3.swagger.io/api/v3",
-	{}
-);
-```
-
-```ts
-// src/pages/index.vue
-import { liteApiClient } from "~/composables/apiClient";
-
-const { data } = await liteApiClient("/pet/{petId}", {
-	path: {
-		petId: "frog",
-	},
-});
-
-console.log(data);
-```
 
 An example for creating a reusable wrapper composable, useful for authentication headers for example, can be found in [examples/composable-wrapper](./example/README.md#composable-wrapper)
 
@@ -123,7 +132,7 @@ Storing the body / path- or query parameters / response with types requires extr
 
 ### Convert schema version
 
-Convert a schema from 1.x or 2.x to 3.0.1 using the swagger API
+Convert a schema from 1.x or 2.x to 3.0.1 using swagger2openapi
 
 <!-- https://editor.swagger.io/?url=https://petstore.swagger.io/v2/swagger.yaml -->
 

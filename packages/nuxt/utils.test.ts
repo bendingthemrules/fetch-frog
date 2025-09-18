@@ -1,6 +1,5 @@
 import { expect, test, describe } from 'vitest';
-import { containsFileOrBlob, formdataBodySerializer } from 'fetch-frog/utils';
-import { fillPath } from './utils';
+import { fillPath, containsFileOrBlob, formdataBodySerializer } from './utils';
 import { computed, reactive, ref } from 'vue';
 
 // turns object into formdata
@@ -56,7 +55,91 @@ describe('formdataBodySerializer', () => {
 		expect(c).toEqual(['d', 'f']);
 	});
 
-	// nested objects?
+	// vue specific tests
+	test('should handle ref values', () => {
+		// Arrange
+		const input = {
+			name: ref('test-name'),
+			value: ref(42),
+		};
+
+		// Act
+		const result = formdataBodySerializer(input) as unknown as FormData;
+
+		// Assert
+		expect(result).toBeInstanceOf(FormData);
+		expect(result.get('name')).toBe('test-name');
+		expect(result.get('value')).toBe('42');
+	});
+
+	test('should handle computed values', () => {
+		// Arrange
+		const baseValue = ref('hello');
+		const input = {
+			computed: computed(() => `${baseValue.value}-computed`),
+			static: 'world',
+		};
+
+		// Act
+		const result = formdataBodySerializer(input) as unknown as FormData;
+
+		// Assert
+		expect(result).toBeInstanceOf(FormData);
+		expect(result.get('computed')).toBe('hello-computed');
+		expect(result.get('static')).toBe('world');
+	});
+
+	test('should handle reactive objects', () => {
+		// Arrange
+		const input = reactive({
+			username: 'testuser',
+			age: 25,
+		});
+
+		// Act
+		const result = formdataBodySerializer(input) as unknown as FormData;
+
+		// Assert
+		expect(result).toBeInstanceOf(FormData);
+		expect(result.get('username')).toBe('testuser');
+		expect(result.get('age')).toBe('25');
+	});
+
+	test('should handle arrays with ref values', () => {
+		// Arrange
+		const input = {
+			tags: [ref('tag1'), ref('tag2'), 'tag3'],
+		};
+
+		// Act
+		const result = formdataBodySerializer(input) as unknown as FormData;
+
+		// Assert
+		expect(result).toBeInstanceOf(FormData);
+		const tags = result.getAll('tags');
+		expect(tags).toEqual(['tag1', 'tag2', 'tag3']);
+	});
+
+	test('should handle mixed reactive and static values', () => {
+		// Arrange
+		const file = new File(['content'], 'test.txt', { type: 'text/plain' });
+		const input = {
+			filename: ref('uploaded-file'),
+			description: computed(() => 'A test file'),
+			file: file,
+			metadata: reactive({ type: 'document', size: 1024 }),
+		};
+
+		// Act
+		const result = formdataBodySerializer(input) as unknown as FormData;
+
+		// Assert
+		expect(result).toBeInstanceOf(FormData);
+		expect(result.get('filename')).toBe('uploaded-file');
+		expect(result.get('description')).toBe('A test file');
+		expect(result.get('file')).toBe(file);
+		expect(result.get('metadata')).toBe('[object Object]');
+	});
 });
 
 // detect files or blobs in objects
@@ -296,5 +379,37 @@ describe('fillPath', () => {
 
 		// Assert
 		expect(result).toBe('/pet/1/photo/2');
+	});
+
+	test('should fill path with reactive parameters', () => {
+		// Arrange
+		const path = '/user/{userId}/settings/{settingId}';
+		const params = reactive({
+			userId: ref('123'),
+			settingId: computed(() => 'theme'),
+		});
+
+		// Act
+		const result = fillPath(path, params);
+
+		// Assert
+		expect(result).toBe('/user/123/settings/theme');
+	});
+
+	test('should fill path with mixed ref and static parameters', () => {
+		// Arrange
+		const path = '/api/{version}/users/{id}/posts/{postId}';
+		const userId = ref(42);
+		const params = {
+			version: 'v1',
+			id: userId,
+			postId: computed(() => 'latest'),
+		};
+
+		// Act
+		const result = fillPath(path, params);
+
+		// Assert
+		expect(result).toBe('/api/v1/users/42/posts/latest');
 	});
 });
