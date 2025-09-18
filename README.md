@@ -95,7 +95,7 @@ const { data } = await apiClient("/auth/login", {
 
 ### Automatic FormData conversion
 
-Fetch Frog also provides a `containsFileOrBlob` utility that can detect when your request body contains File or Blob objects, enabling automatic conversion to FormData.
+Fetch Frog provides a `containsFileOrBlob` utility that can detect when your request body contains File or Blob objects, enabling automatic conversion to FormData.
 
 ```ts
 import { containsFileOrBlob, formdataBodySerializer } from "fetch-frog";
@@ -108,13 +108,9 @@ const requestBody = {
 
 // Check if the body contains files/blobs
 if (containsFileOrBlob(requestBody)) {
-	// Auto-convert to FormData while preserving types
-	const formData = formdataBodySerializer(requestBody);
-
-	// Use in your request
 	const { data } = await apiClient("/user/avatar", {
 		method: "POST",
-		body: formData,
+		body: formdataBodySerializer(requestBody), // convert to FormData while preserving type
 	});
 }
 ```
