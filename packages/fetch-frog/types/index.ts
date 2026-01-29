@@ -4,7 +4,7 @@ export type {
 	KeysOf,
 	ParamsOption,
 	PickFrom,
-	RequestBodyOption,
+	RequestBodyOption
 } from './utils.js';
 
 export type {
@@ -13,7 +13,7 @@ export type {
 	ExtractPathParams,
 	ExtractQueryParams,
 	ExtractLitePathParams,
-	ExtractLiteQueryParams,
+	ExtractLiteQueryParams
 } from './extractors.js';
 
 export type { FetchClient } from './fetch-frog.js';
