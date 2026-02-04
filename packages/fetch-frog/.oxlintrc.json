@@ -1,16 +1,4 @@
 {
 	"$schema": "./node_modules/oxlint/configuration_schema.json",
-	"categories": {
-		"correctness": "error",
-		"suspicious": "warn",
-		"pedantic": "off",
-		"style": "off",
-		"restriction": "off"
-	},
-	"plugins": ["typescript"],
-	"rules": {
-		"no-unused-vars": "warn",
-		"no-console": "off"
-	},
-	"ignorePatterns": ["dist/**", "node_modules/**", "coverage/**"]
+	"extends": ["../../.oxlintrc.json"]
 }

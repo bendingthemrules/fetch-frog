@@ -1,21 +1,29 @@
 {
 	"name": "@fetch-frog/nuxt",
-	"description": "Nuxt specific implementation of fetch-frog",
 	"version": "0.0.2-beta.0",
 	"private": false,
-	"type": "module",
+	"description": "Nuxt specific implementation of fetch-frog",
 	"license": "MIT",
-	"scripts": {},
-	"peerDependencies": {
-		"nuxt": "^3.0.0 || ^4.0.0",
-		"vue": "^3.0.0"
+	"type": "module",
+	"publishConfig": {
+		"access": "public"
 	},
-	"devDependencies": {},
+	"scripts": {
+		"lint": "oxlint",
+		"lint:fix": "oxlint --fix",
+		"fmt": "oxfmt --write .",
+		"fmt:check": "oxfmt --check ."
+	},
 	"dependencies": {
 		"defu": "^6.1.4",
 		"fetch-frog": "workspace:*"
 	},
-	"publishConfig": {
-		"access": "public"
+	"devDependencies": {
+		"oxfmt": "catalog:",
+		"oxlint": "catalog:"
+	},
+	"peerDependencies": {
+		"nuxt": "^3.0.0 || ^4.0.0",
+		"vue": "^3.0.0"
 	}
 }
