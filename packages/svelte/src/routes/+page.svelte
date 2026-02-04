@@ -6,13 +6,13 @@
 
 	const apiClient = createFetchClient<paths>('', {});
 
-	const useApiClient = createReactiveApi(() =>
-		apiClient('/pet/{petId}', {
-			path: {
-				petId: 1
-			}
-		})
-	);
+	// const _useApiClient = createReactiveApi(() =>
+	// 	apiClient('/pet/{petId}', {
+	// 		path: {
+	// 			petId: 1
+	// 		}
+	// 	})
+	// );
 
 	async function mockCall({ count }: { count: number }) {
 		await new Promise((resolve) => setTimeout(resolve, 100));
@@ -30,6 +30,7 @@
 				petId: 1
 			}
 		});
+		console.info('mount data', data);
 	});
 </script>
 

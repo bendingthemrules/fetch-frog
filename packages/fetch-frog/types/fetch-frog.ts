@@ -10,12 +10,8 @@ import type {
 
 export type FetchClient<Paths> = <
 	ReqT extends Extract<keyof Paths, string>,
-	Method extends
-		| Extract<keyof Paths[ReqT], string>
-		| Uppercase<Extract<keyof Paths[ReqT], string>>,
-	LowercasedMethod extends Lowercase<Method> extends keyof Paths[ReqT]
-		? Lowercase<Method>
-		: never,
+	Method extends Extract<keyof Paths[ReqT], string> | Uppercase<Extract<keyof Paths[ReqT], string>>,
+	LowercasedMethod extends Lowercase<Method> extends keyof Paths[ReqT] ? Lowercase<Method> : never,
 	DefaultMethod extends 'get' extends LowercasedMethod ? 'get' : LowercasedMethod,
 	DataT = FetchResponseData<Paths[ReqT][DefaultMethod]>,
 	ErrorT = FetchResponseError<Paths[ReqT][DefaultMethod]>,
