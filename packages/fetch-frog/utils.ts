@@ -1,12 +1,10 @@
 /**
  * Turn an object into FormData while keeping its object type
  * @template {Record<string, any>} T
- * @param {T} [body] - The object to convert to FormData
- * @returns {T} - FormData cast to the original type
+ * @param {T} [body] The object to convert to FormData
+ * @returns {T} FormData cast to the original type
  */
-export function formdataBodySerializer<T extends Record<string, any>>(
-	body: T
-): T {
+export function formdataBodySerializer<T extends Record<string, any>>(body?: T): T {
 	const formData = new FormData();
 
 	if (!body) return formData as unknown as T;
@@ -27,9 +25,9 @@ export function formdataBodySerializer<T extends Record<string, any>>(
 }
 
 /**
- * Check if an object contains a file or a blob
- * If it was already transformed into FormData, skip
- * @param {Record<string, any> | FormData} [body] - The object to check
+ * Checks if an object contains a file or a blob
+ * Skips objects already transformed into FormData
+ * @param {Record<string, any> | FormData} [body] The object to check
  */
 export function containsFileOrBlob(body: Record<string, any> | FormData) {
 	if (!body) return false;
@@ -40,10 +38,7 @@ export function containsFileOrBlob(body: Record<string, any> | FormData) {
 
 		if (typeof v === 'object' && containsFileOrBlob(v)) return true;
 
-		if (
-			Array.isArray(v) &&
-			v.some((item) => item instanceof File || item instanceof Blob)
-		)
+		if (Array.isArray(v) && v.some((item) => item instanceof File || item instanceof Blob))
 			return true;
 	}
 
@@ -52,8 +47,8 @@ export function containsFileOrBlob(body: Record<string, any> | FormData) {
 
 /**
  * Fill a path with parameters
- * @param {string} path - The path template with {param} placeholders
- * @param {Record<string, unknown>} [params] - Parameters to fill
+ * @param {string} path The path template with {param} placeholders
+ * @param {Record<string, unknown>} [params] Parameters to fill
  */
 export function fillPath(path: string, params = {} as Record<string, unknown>) {
 	for (const [k, v] of Object.entries(params))

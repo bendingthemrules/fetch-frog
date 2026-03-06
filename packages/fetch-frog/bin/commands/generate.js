@@ -24,7 +24,7 @@ export default async function (flags, _args) {
 	 * @type Partial<import("swagger2openapi").ConvertInputOptions>
 	 */
 	const converterOptions = {
-		targetVersion: '3.0.1',
+		targetVersion: '3.0.1'
 	};
 
 	console.log('Converting:', { inputPath });

@@ -5,20 +5,14 @@ import type {
 	KeysOf,
 	MethodOption,
 	ParamsOption,
-	RequestBodyOption,
+	RequestBodyOption
 } from './utils.js';
 
 export type FetchClient<Paths> = <
 	ReqT extends Extract<keyof Paths, string>,
-	Method extends
-		| Extract<keyof Paths[ReqT], string>
-		| Uppercase<Extract<keyof Paths[ReqT], string>>,
-	LowercasedMethod extends Lowercase<Method> extends keyof Paths[ReqT]
-		? Lowercase<Method>
-		: never,
-	DefaultMethod extends 'get' extends LowercasedMethod
-		? 'get'
-		: LowercasedMethod,
+	Method extends Extract<keyof Paths[ReqT], string> | Uppercase<Extract<keyof Paths[ReqT], string>>,
+	LowercasedMethod extends Lowercase<Method> extends keyof Paths[ReqT] ? Lowercase<Method> : never,
+	DefaultMethod extends 'get' extends LowercasedMethod ? 'get' : LowercasedMethod,
 	DataT = FetchResponseData<Paths[ReqT][DefaultMethod]>,
 	ErrorT = FetchResponseError<Paths[ReqT][DefaultMethod]>,
 	PickKeys extends KeysOf<DataT> = KeysOf<DataT>
@@ -37,8 +31,8 @@ type ClientFetchOptions<
 			? Params['get']
 			: never
 		: LowercasedMethod extends keyof Params
-		? Params[LowercasedMethod]
-		: never
+			? Params[LowercasedMethod]
+			: never
 > = MethodOption<Method, Params> &
 	ParamsOption<_Operation> &
 	RequestBodyOption<_Operation> &

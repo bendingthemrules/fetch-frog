@@ -11,14 +11,16 @@
 	"scripts": {
 		"build": "pnpm -r run build",
 		"test": "pnpm -r run test",
+		"lint": "pnpm -r run lint",
+		"fmt": "pnpm -r run fmt",
 		"changeset": "changeset",
 		"version-packages": "changeset version",
 		"release": "pnpm run build && changeset publish"
 	},
 	"devDependencies": {
-		"@changesets/cli": "^2.29.7",
-		"prettier": "^3.4.2",
-		"prettier-plugin-svelte": "^3.4.0",
+		"@changesets/cli": "^2.30.0",
+		"oxfmt": "catalog:",
+		"oxlint": "catalog:",
 		"vitest": "^3.2.4"
 	},
 	"pnpm": {

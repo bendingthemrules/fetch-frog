@@ -3,9 +3,7 @@ import { toValue, type MaybeRef } from 'vue';
 /**
  * Turn an object into FormData while keeping its object type
  */
-export function formdataBodySerializer<T extends Record<string, any>>(
-	body?: T
-): T {
+export function formdataBodySerializer<T extends Record<string, any>>(body?: T): T {
 	const formData = new FormData();
 
 	if (!body) return formData as unknown as T;
@@ -31,9 +29,7 @@ export function formdataBodySerializer<T extends Record<string, any>>(
  * Check if an object contains a file or a blob
  * If it was already transformed into FormData, skip
  */
-export function containsFileOrBlob(
-	body?: Record<string, any> | FormData
-): boolean {
+export function containsFileOrBlob(body?: Record<string, any> | FormData): boolean {
 	if (!body) return false;
 	if (body instanceof FormData) return false;
 
@@ -44,10 +40,7 @@ export function containsFileOrBlob(
 
 		if (typeof v === 'object' && containsFileOrBlob(v)) return true;
 
-		if (
-			Array.isArray(v) &&
-			v.some((item) => item instanceof File || item instanceof Blob)
-		)
+		if (Array.isArray(v) && v.some((item) => item instanceof File || item instanceof Blob))
 			return true;
 	}
 
@@ -57,10 +50,7 @@ export function containsFileOrBlob(
 /**
  * Fill a path with reactive parameters
  */
-export function fillPath(
-	path: string,
-	params: MaybeRef<Record<string, unknown>> = {}
-) {
+export function fillPath(path: string, params: MaybeRef<Record<string, unknown>> = {}) {
 	for (const [k, v] of Object.entries(toValue(params)))
 		path = path.replace(`{${k}}`, encodeURIComponent(String(toValue(v))));
 	return path;

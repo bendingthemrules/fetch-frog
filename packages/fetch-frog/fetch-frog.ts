@@ -4,7 +4,10 @@ import { fillPath } from './utils.js';
 import type { FetchClient } from './types/fetch-frog.js';
 
 /**
- * Create a lite fetch client
+ * Create a fetch frog client
+ *
+ * @param {string} baseUrl The base URL for the API
+ * @param {import('ofetch').FetchOptions} defaults Default fetch options
  *
  * @example
  * ```js
@@ -24,8 +27,6 @@ import type { FetchClient } from './types/fetch-frog.js';
  * 	 console.info(data)
  * }
  * ```
- * @param {string} baseUrl - The base URL for the API
- * @param {import('ofetch').FetchOptions} defaults - Default fetch options
  */
 export function createFetchClient<Paths>(
 	baseUrl: string,
@@ -42,9 +43,9 @@ export function createFetchClient<Paths>(
 
 /**
  * Internal function to handle the actual fetch call
- * @param {string} url - The URL to fetch
- * @param {import('ofetch').FetchOptions} options - Fetch options
- * @returns {Promise<{ data: any; error: null } | { data: null; error: any }>} - Result object with data or error
+ * @param {string} url The URL to fetch
+ * @param {import('ofetch').FetchOptions} options Fetch options
+ * @returns {Promise<{ data: any; error: null } | { data: null; error: any }>} Result object with data or error
  */
 async function fetchCall(
 	url: string,

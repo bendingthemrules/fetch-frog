@@ -60,7 +60,7 @@ describe('formdataBodySerializer', () => {
 		// Arrange
 		const input = {
 			name: ref('test-name'),
-			value: ref(42),
+			value: ref(42)
 		};
 
 		// Act
@@ -77,7 +77,7 @@ describe('formdataBodySerializer', () => {
 		const baseValue = ref('hello');
 		const input = {
 			computed: computed(() => `${baseValue.value}-computed`),
-			static: 'world',
+			static: 'world'
 		};
 
 		// Act
@@ -93,7 +93,7 @@ describe('formdataBodySerializer', () => {
 		// Arrange
 		const input = reactive({
 			username: 'testuser',
-			age: 25,
+			age: 25
 		});
 
 		// Act
@@ -108,7 +108,7 @@ describe('formdataBodySerializer', () => {
 	test('should handle arrays with ref values', () => {
 		// Arrange
 		const input = {
-			tags: [ref('tag1'), ref('tag2'), 'tag3'],
+			tags: [ref('tag1'), ref('tag2'), 'tag3']
 		};
 
 		// Act
@@ -127,7 +127,7 @@ describe('formdataBodySerializer', () => {
 			filename: ref('uploaded-file'),
 			description: computed(() => 'A test file'),
 			file: file,
-			metadata: reactive({ type: 'document', size: 1024 }),
+			metadata: reactive({ type: 'document', size: 1024 })
 		};
 
 		// Act
@@ -193,7 +193,7 @@ describe('containsFileOrBlob', () => {
 		const input = {
 			a: 'b',
 			c: ['d', 'f'],
-			g: ['a', 1, { a: 'b' }],
+			g: ['a', 1, { a: 'b' }]
 		};
 
 		// Act
@@ -208,7 +208,7 @@ describe('containsFileOrBlob', () => {
 		const input = {
 			a: 'b',
 			c: ['d', 'f'],
-			g: new File([''], 'filename.txt', { type: 'text/plain' }),
+			g: new File([''], 'filename.txt', { type: 'text/plain' })
 		};
 
 		// Act
@@ -224,8 +224,8 @@ describe('containsFileOrBlob', () => {
 			a: 'b',
 			c: ['d', 'f'],
 			g: {
-				h: new File([''], 'filename.txt', { type: 'text/plain' }),
-			},
+				h: new File([''], 'filename.txt', { type: 'text/plain' })
+			}
 		};
 
 		// Act
@@ -240,7 +240,7 @@ describe('containsFileOrBlob', () => {
 		const input = {
 			a: 'b',
 			c: ['d', 'f'],
-			g: ['a', 1, new File([''], 'filename.txt', { type: 'text/plain' })],
+			g: ['a', 1, new File([''], 'filename.txt', { type: 'text/plain' })]
 		};
 
 		// Act
@@ -255,11 +255,7 @@ describe('containsFileOrBlob', () => {
 		const input = {
 			a: 'b',
 			c: ['d', 'f'],
-			g: [
-				'a',
-				1,
-				{ a: new File([''], 'filename.txt', { type: 'text/plain' }) },
-			],
+			g: ['a', 1, { a: new File([''], 'filename.txt', { type: 'text/plain' }) }]
 		};
 
 		// Act
@@ -271,7 +267,7 @@ describe('containsFileOrBlob', () => {
 
 	test('should unwrap computed body', () => {
 		const input = computed(() => ({
-			a: 5,
+			a: 5
 		}));
 
 		const result = containsFileOrBlob(input);
@@ -280,7 +276,7 @@ describe('containsFileOrBlob', () => {
 
 	test('should find files in computed body', () => {
 		const input = computed(() => ({
-			a: new File([''], 'filename.txt', { type: 'text/plain' }),
+			a: new File([''], 'filename.txt', { type: 'text/plain' })
 		}));
 
 		const result = containsFileOrBlob(input);
@@ -290,7 +286,7 @@ describe('containsFileOrBlob', () => {
 
 	test('should unwrap reactive objects', () => {
 		const input = reactive({
-			file: new File([''], 'filename.txt', { type: 'text/plain' }),
+			file: new File([''], 'filename.txt', { type: 'text/plain' })
 		});
 
 		const result = containsFileOrBlob(input);
@@ -299,7 +295,7 @@ describe('containsFileOrBlob', () => {
 
 	test('should unwrap ref objects', () => {
 		const input = ref({
-			file: new File([''], 'filename.txt', { type: 'text/plain' }),
+			file: new File([''], 'filename.txt', { type: 'text/plain' })
 		});
 
 		const result = containsFileOrBlob(input);
@@ -314,7 +310,7 @@ describe('fillPath', () => {
 		const path = '/pet/{petId}/photo/{photoId}';
 		const params = {
 			petId: 1,
-			photoId: 2,
+			photoId: 2
 		};
 
 		// Act
@@ -328,7 +324,7 @@ describe('fillPath', () => {
 		// Arrange
 		const path = '/pet/{petId}/photo/{photoId}';
 		const params = {
-			petId: 1,
+			petId: 1
 		};
 
 		// Act
@@ -344,7 +340,7 @@ describe('fillPath', () => {
 		const params = {
 			petId: 1,
 			photoId: 2,
-			extra: 3,
+			extra: 3
 		};
 
 		// Act
@@ -371,7 +367,7 @@ describe('fillPath', () => {
 		const path = '/pet/{petId}/photo/{photoId}';
 		const params = computed(() => ({
 			petId: 1,
-			photoId: 2,
+			photoId: 2
 		}));
 
 		// Act
@@ -386,7 +382,7 @@ describe('fillPath', () => {
 		const path = '/user/{userId}/settings/{settingId}';
 		const params = reactive({
 			userId: ref('123'),
-			settingId: computed(() => 'theme'),
+			settingId: computed(() => 'theme')
 		});
 
 		// Act
@@ -403,7 +399,7 @@ describe('fillPath', () => {
 		const params = {
 			version: 'v1',
 			id: userId,
-			postId: computed(() => 'latest'),
+			postId: computed(() => 'latest')
 		};
 
 		// Act

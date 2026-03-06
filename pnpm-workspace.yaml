@@ -1,2 +1,7 @@
 packages:
-  - 'packages/*'
+    - "packages/*"
+
+catalog:
+    eslint-plugin-oxlint: ^1.43.0
+    oxfmt: ^0.28.0
+    oxlint: ^1.43.0

@@ -37,7 +37,7 @@ export function createUseFetchClient<Paths, Lazy extends boolean = boolean>(
 			const segments = [
 				toValue(baseUrl),
 				toValue(fillPath(toValue(url), options.path)),
-				toValue(options.method)?.toUpperCase() || 'GET',
+				toValue(options.method)?.toUpperCase() || 'GET'
 			];
 
 			const query = toValue(options.query) as Record<string, string>;
@@ -54,9 +54,7 @@ export function createUseFetchClient<Paths, Lazy extends boolean = boolean>(
 			options.key = hash;
 		}
 
-		const filledPath = computed(() =>
-			fillPath(baseUrl + toValue(url), options.path)
-		);
+		const filledPath = computed(() => fillPath(baseUrl + toValue(url), options.path));
 
 		const opts = { ...options };
 

@@ -8,7 +8,7 @@ import generate from './commands/generate.js';
 /** @type {Record<string, import('./types').Command>} */
 const commands = {
 	convert,
-	generate,
+	generate
 };
 
 const timeStart = performance.now();
@@ -20,8 +20,8 @@ const flags = parser(args, {
 	string: ['input', 'output'],
 	alias: {
 		input: ['i'],
-		output: ['o'],
-	},
+		output: ['o']
+	}
 });
 
 async function main() {

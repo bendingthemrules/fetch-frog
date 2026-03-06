@@ -1,21 +1,16 @@
 {
 	"name": "fetch-frog",
-	"description": "Type safe api clients using OpenApi Spec",
 	"version": "0.0.2-beta.0",
 	"private": false,
-	"type": "module",
-	"scripts": {
-		"generate": "openapi-typescript",
-		"cli:convert": "node ./bin/script.js convert",
-		"cli:generate": "node ./bin/script.js generate",
-		"test": "pnpm test:types && vitest run",
-		"test:types": "tsc -p tsconfig.json --noEmit",
-		"coverage": "vitest run --coverage",
-		"build": "tsc -p tsconfig.build.json"
-	},
+	"description": "Type safe api clients using OpenApi Spec",
 	"bin": {
 		"fetch-frog": "./bin/script.js"
 	},
+	"files": [
+		"dist/**",
+		"bin"
+	],
+	"type": "module",
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"exports": {
@@ -32,14 +27,21 @@
 			"import": "./dist/utils.js"
 		}
 	},
-	"files": [
-		"dist/**",
-		"bin"
-	],
-	"devDependencies": {
-		"@vitest/coverage-v8": "3.2.4",
-		"typescript": "^5.0.0",
-		"vitest": "^3.2.4"
+	"publishConfig": {
+		"access": "public"
+	},
+	"scripts": {
+		"generate": "openapi-typescript",
+		"cli:convert": "node ./bin/script.js convert",
+		"cli:generate": "node ./bin/script.js generate",
+		"test": "pnpm test:types && vitest run",
+		"test:types": "tsc -p tsconfig.json --noEmit",
+		"coverage": "vitest run --coverage",
+		"build": "tsc -p tsconfig.build.json",
+		"lint": "oxlint",
+		"lint:fix": "oxlint --fix",
+		"fmt": "oxfmt --write .",
+		"fmt:check": "oxfmt --check ."
 	},
 	"dependencies": {
 		"defu": "^6.1.4",
@@ -49,7 +51,11 @@
 		"swagger2openapi": "^7.0.8",
 		"yargs-parser": "^21.1.1"
 	},
-	"publishConfig": {
-		"access": "public"
+	"devDependencies": {
+		"@vitest/coverage-v8": "3.2.4",
+		"oxfmt": "catalog:",
+		"oxlint": "catalog:",
+		"typescript": "^5.0.0",
+		"vitest": "^3.2.4"
 	}
 }

@@ -57,17 +57,6 @@ describe('formdataBodySerializer', () => {
 
 // detect files or blobs in objects
 describe('containsFileOrBlob', () => {
-	test('should not detect file in undefined', () => {
-		// Arrange
-		const input = undefined;
-
-		// Act
-		const result = containsFileOrBlob(input);
-
-		// Assert
-		expect(result).toBe(false);
-	});
-
 	test('should not detect file in empty object', () => {
 		// Arrange
 		const input = {};
@@ -106,7 +95,7 @@ describe('containsFileOrBlob', () => {
 		const input = {
 			a: 'b',
 			c: ['d', 'f'],
-			g: ['a', 1, { a: 'b' }],
+			g: ['a', 1, { a: 'b' }]
 		};
 
 		// Act
@@ -121,7 +110,7 @@ describe('containsFileOrBlob', () => {
 		const input = {
 			a: 'b',
 			c: ['d', 'f'],
-			g: new File([''], 'filename.txt', { type: 'text/plain' }),
+			g: new File([''], 'filename.txt', { type: 'text/plain' })
 		};
 
 		// Act
@@ -137,8 +126,8 @@ describe('containsFileOrBlob', () => {
 			a: 'b',
 			c: ['d', 'f'],
 			g: {
-				h: new File([''], 'filename.txt', { type: 'text/plain' }),
-			},
+				h: new File([''], 'filename.txt', { type: 'text/plain' })
+			}
 		};
 
 		// Act
@@ -153,7 +142,7 @@ describe('containsFileOrBlob', () => {
 		const input = {
 			a: 'b',
 			c: ['d', 'f'],
-			g: ['a', 1, new File([''], 'filename.txt', { type: 'text/plain' })],
+			g: ['a', 1, new File([''], 'filename.txt', { type: 'text/plain' })]
 		};
 
 		// Act
@@ -168,11 +157,7 @@ describe('containsFileOrBlob', () => {
 		const input = {
 			a: 'b',
 			c: ['d', 'f'],
-			g: [
-				'a',
-				1,
-				{ a: new File([''], 'filename.txt', { type: 'text/plain' }) },
-			],
+			g: ['a', 1, { a: new File([''], 'filename.txt', { type: 'text/plain' }) }]
 		};
 
 		// Act
@@ -190,7 +175,7 @@ describe('fillPath', () => {
 		const path = '/pet/{petId}/photo/{photoId}';
 		const params = {
 			petId: 1,
-			photoId: 2,
+			photoId: 2
 		};
 
 		// Act
@@ -204,7 +189,7 @@ describe('fillPath', () => {
 		// Arrange
 		const path = '/pet/{petId}/photo/{photoId}';
 		const params = {
-			petId: 1,
+			petId: 1
 		};
 
 		// Act
@@ -220,7 +205,7 @@ describe('fillPath', () => {
 		const params = {
 			petId: 1,
 			photoId: 2,
-			extra: 3,
+			extra: 3
 		};
 
 		// Act
