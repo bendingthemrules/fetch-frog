@@ -1,6 +1,6 @@
 # Fetch Frog Nuxt
 
-Nuxt specific implementation of fetch-frog.
+Nuxt specific implementation of [fetch-frog](https://github.com/bendingthemrules/fetch-frog).
 
 ### Reactive fetching with SSR sync (Nuxt useFetch)
 

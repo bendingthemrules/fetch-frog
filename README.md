@@ -9,14 +9,14 @@
         <h1 align="center"><b>Fetch Frog</b></h1>
     </center>
     <center>
-        <p align="center">Type safe api clients using OpenApi Specs</p>
+        <p align="center">Type safe api clients using OpenApi Specifications</p>
     </center>
 </div>
 
 ## Framework Integrations
 
--   **[Nuxt](./packages/nuxt/README.md)** - SSR-ready reactive fetching with `useFetch` integration
--   **[Svelte](./packages/svelte/README.md)** - Svelte and SvelteKit optimized implementation _(coming soon)_
+- **[Nuxt](./packages/nuxt/README.md)** - SSR-ready reactive fetching with `useFetch` integration
+- **[Svelte](./packages/svelte/README.md)** - Svelte and SvelteKit optimized implementation _(beta)_
 
 ## Usage
 
@@ -148,5 +148,5 @@ fetch-frog generate v3.schema.json -o schema.d.ts
 
 ## Credits
 
--   [openapi-ts](https://github.com/openapi-ts/openapi-typescript)
--   [enkot/nuxt-open-fetch](https://github.com/enkot/nuxt-open-fetch)
+- [openapi-ts](https://github.com/openapi-ts/openapi-typescript)
+- [enkot/nuxt-open-fetch](https://github.com/enkot/nuxt-open-fetch)

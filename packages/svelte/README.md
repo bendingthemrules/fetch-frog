@@ -1,6 +1,6 @@
 # Fetch Frog Svelte
 
-Svelte specific implementation of fetch-frog.
+Svelte specific implementation of [fetch-frog](https://github.com/bendingthemrules/fetch-frog).
 
 ```ts
 import { createFetchClient } from 'fetch-frog';
