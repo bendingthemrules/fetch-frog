@@ -5,5 +5,5 @@
 		"no-unused-vars": ["warn", { "varsIgnorePattern": "^_", "argsIgnorePattern": "^_" }],
 		"no-console": "off"
 	},
-	"ignorePatterns": ["dist/**", "node_modules/**", "coverage/**"]
+	"ignorePatterns": ["dist/**", "coverage/**"]
 }

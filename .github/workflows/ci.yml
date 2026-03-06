@@ -28,10 +28,10 @@ jobs:
               run: pnpm install --frozen-lockfile
 
             - name: Lint
-              run: pnpm --filter fetch-frog run lint
+              run: pnpm -r run lint
 
             - name: Check formatting
-              run: pnpm --filter fetch-frog run fmt:check
+              run: pnpm -r run fmt:check
 
             - name: Install Playwright browsers
               run: pnpm --filter @fetch-frog/svelte exec playwright install --with-deps chromium

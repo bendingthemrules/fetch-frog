@@ -18,12 +18,10 @@
 		"release": "pnpm run build && changeset publish"
 	},
 	"devDependencies": {
-		"@changesets/cli": "^2.29.8",
-		"prettier": "^3.8.1",
-		"prettier-plugin-svelte": "^3.4.1",
-		"vitest": "^3.2.4",
+		"@changesets/cli": "^2.30.0",
 		"oxfmt": "catalog:",
-		"oxlint": "catalog:"
+		"oxlint": "catalog:",
+		"vitest": "^3.2.4"
 	},
 	"pnpm": {
 		"onlyBuiltDependencies": [
