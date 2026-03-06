@@ -27,7 +27,7 @@ export function formdataBodySerializer<T extends Record<string, any>>(body?: T):
 /**
  * Checks if an object contains a file or a blob
  * Skips objects already transformed into FormData
- * @param {Record<string, any> | FormData} [body] - The object to check
+ * @param {Record<string, any> | FormData} [body] The object to check
  */
 export function containsFileOrBlob(body: Record<string, any> | FormData) {
 	if (!body) return false;
