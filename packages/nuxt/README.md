@@ -6,23 +6,23 @@ Nuxt specific implementation of [fetch-frog](https://github.com/bendingthemrules
 
 ```ts
 // src/composables/apiClients.ts
-import { createUseFetchClient } from '@fetch-frog/nuxt';
-import type { paths } from '~/types/api/v1'; // generated api types
+import { createUseFetchClient } from "@fetch-frog/nuxt";
+import type { paths } from "~/types/api/v1"; // generated api types
 
 export const reactiveApiClient = createUseFetchClient<paths>(
-	'https://petstore3.swagger.io/api/v3',
-	{}
+	"https://petstore3.swagger.io/api/v3",
+	{},
 );
 ```
 
 ```ts
 // src/pages/index.vue
-import { reactiveApiClient } from '~/composables/apiClient';
+import { reactiveApiClient } from "~/composables/apiClient";
 
-const { data } = await reactiveApiClient('/pet/{petId}', {
+const { data } = await reactiveApiClient("/pet/{petId}", {
 	path: {
-		petId: 'frog'
-	}
+		petId: "frog",
+	},
 });
 
 console.log(data.value);
@@ -37,8 +37,8 @@ Because of how Nuxt/Vue work, if you want to pass default values from a store or
 ```ts
 // src/composables/apiClients.ts
 
-import { createUseFetchClient } from 'fetch-frog';
-import type { paths } from '~/types/api/v1';
+import { createUseFetchClient } from "fetch-frog";
+import type { paths } from "~/types/api/v1";
 
 export function createApiClient() {
 	const { user } = useNuxtApp().$auth;
@@ -48,9 +48,9 @@ export function createApiClient() {
 		onRequest: async ({ options }) => {
 			options.headers = {
 				...options.headers,
-				Authorization: `Bearer ${user.value?.accessToken}`
+				Authorization: `Bearer ${user.value?.accessToken}`,
 			};
-		}
+		},
 	});
 }
 ```
@@ -59,9 +59,9 @@ export function createApiClient() {
 // src/pages/index.vue
 
 const apiClient = createApiClient();
-const { data } = await apiClient('/pet/{petId}', {
+const { data } = await apiClient("/pet/{petId}", {
 	path: {
-		petId: 'frog'
-	}
+		petId: "frog",
+	},
 });
 ```
