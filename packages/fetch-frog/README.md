@@ -32,18 +32,15 @@ Supports JSON, YAML, URLs and local file paths. For the full list of options, se
 ### Create a fetch client
 
 ```ts
-import { createFetchClient } from "fetch-frog";
-import type { paths } from "./schema"; // generated api types
+import { createFetchClient } from 'fetch-frog';
+import type { paths } from './schema'; // generated api types
 
-const apiClient = createFetchClient<paths>(
-	"https://petstore3.swagger.io/api/v3",
-	{},
-);
+const apiClient = createFetchClient<paths>('https://petstore3.swagger.io/api/v3', {});
 
-const { data } = await apiClient("/pet/{petId}", {
+const { data } = await apiClient('/pet/{petId}', {
 	path: {
-		petId: "frog",
-	},
+		petId: 'frog'
+	}
 });
 
 console.log(data);
@@ -54,15 +51,15 @@ console.log(data);
 `formdataBodySerializer` converts flat objects into FormData while keeping the object type.
 
 ```ts
-import { formdataBodySerializer } from "fetch-frog";
+import { formdataBodySerializer } from 'fetch-frog';
 
-const { data } = await apiClient("/pet/{petId}/uploadImage", {
-	path: { petId: "frog" },
-	method: "POST",
+const { data } = await apiClient('/pet/{petId}/uploadImage', {
+	path: { petId: 'frog' },
+	method: 'POST',
 	body: formdataBodySerializer({
-		additionalMetadata: "string",
-		file: new File([""], "frog.png", { type: "image/png" }),
-	}),
+		additionalMetadata: 'string',
+		file: new File([''], 'frog.png', { type: 'image/png' })
+	})
 });
 ```
 
@@ -71,17 +68,17 @@ const { data } = await apiClient("/pet/{petId}/uploadImage", {
 `containsFileOrBlob` detects when a request body contains File or Blob objects, enabling automatic conversion to FormData.
 
 ```ts
-import { containsFileOrBlob, formdataBodySerializer } from "fetch-frog";
+import { containsFileOrBlob, formdataBodySerializer } from 'fetch-frog';
 
 const requestBody = {
-	name: "Profile picture",
-	file: new File([""], "avatar.jpg", { type: "image/jpeg" }),
+	name: 'Profile picture',
+	file: new File([''], 'avatar.jpg', { type: 'image/jpeg' })
 };
 
 if (containsFileOrBlob(requestBody)) {
-	const { data } = await apiClient("/user/avatar", {
-		method: "POST",
-		body: formdataBodySerializer(requestBody),
+	const { data } = await apiClient('/user/avatar', {
+		method: 'POST',
+		body: formdataBodySerializer(requestBody)
 	});
 }
 ```
