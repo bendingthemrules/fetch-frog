@@ -5,9 +5,7 @@ export type {
 	ExtractResponse,
 	ExtractBody,
 	ExtractPathParams,
-	ExtractQueryParams,
-	ExtractLitePathParams,
-	ExtractLiteQueryParams
+	ExtractQueryParams
 } from './types/extractors.js';
 
 export type {
