@@ -52,6 +52,6 @@ export function containsFileOrBlob(body?: Record<string, any> | FormData): boole
  */
 export function fillPath(path: string, params: MaybeRef<Record<string, unknown>> = {}) {
 	for (const [k, v] of Object.entries(toValue(params)))
-		path = path.replace(`{${k}}`, encodeURIComponent(String(toValue(v))));
+		path = path.replaceAll(`{${k}}`, encodeURIComponent(String(toValue(v))));
 	return path;
 }

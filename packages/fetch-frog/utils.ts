@@ -52,6 +52,6 @@ export function containsFileOrBlob(body: Record<string, any> | FormData) {
  */
 export function fillPath(path: string, params = {} as Record<string, unknown>) {
 	for (const [k, v] of Object.entries(params))
-		path = path.replace(`{${k}}`, encodeURIComponent(String(v)));
+		path = path.replaceAll(`{${k}}`, encodeURIComponent(String(v)));
 	return path;
 }
