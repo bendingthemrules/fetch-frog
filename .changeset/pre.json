@@ -1,0 +1,12 @@
+{
+  "mode": "pre",
+  "tag": "beta",
+  "initialVersions": {
+    "fetch-frog": "0.0.2-beta.0",
+    "@fetch-frog/nuxt": "0.0.2-beta.0",
+    "@fetch-frog/svelte": "0.0.2-beta.0"
+  },
+  "changesets": [
+    "cuddly-gifts-rush"
+  ]
+}

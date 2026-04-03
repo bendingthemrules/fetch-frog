@@ -226,4 +226,18 @@ describe('fillPath', () => {
 		// Assert
 		expect(result).toBe('/pet/photo');
 	});
+
+	test('should fill path with multiple parameters with the same name', () => {
+		// Arrange
+		const path = '/pet/{petId}/photo/{petId}';
+		const params = {
+			petId: 1
+		};
+
+		// Act
+		const result = fillPath(path, params);
+
+		// Assert
+		expect(result).toBe('/pet/1/photo/1');
+	});
 });

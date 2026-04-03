@@ -35,23 +35,19 @@ export function createUseFetchClient<Paths, Lazy extends boolean = boolean>(
 		if (!options.key) {
 			// generate a key based on baseUrl, urlPath, query and method
 			const segments = [
-				toValue(baseUrl),
+				baseUrl,
 				toValue(fillPath(toValue(url), options.path)),
 				toValue(options.method)?.toUpperCase() || 'GET'
 			];
 
 			const query = toValue(options.query) as Record<string, string>;
 			if (query) {
-				const unwrapped: Record<string, string> = {};
-				for (const [key, value] of Object.entries(query)) {
-					unwrapped[toValue(key)] = toValue(value);
-				}
-				segments.push(unwrapped);
+				const params = new URLSearchParams(query);
+				params.sort();
+				segments.push(params.toString());
 			}
 
-			// TODO: use a better hash function
-			const hash = JSON.stringify(segments);
-			options.key = hash;
+			options.key = segments.join('|');
 		}
 
 		const filledPath = computed(() => fillPath(baseUrl + toValue(url), options.path));
