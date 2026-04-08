@@ -41,6 +41,19 @@ describe('formdataBodySerializer', () => {
 		expect(result.get('c')).toBe('1');
 	});
 
+	test('should turn nested object into FormData with dot notation', () => {
+		// Arrange
+		const input = { user: { name: 'Froggy', address: { city: 'Pond' } } };
+
+		// Act
+		const result = formdataBodySerializer(input) as never as FormData;
+
+		// Assert
+		expect([...result.keys()].length).toBe(2);
+		expect(result.get('user.name')).toBe('Froggy');
+		expect(result.get('user.address.city')).toBe('Pond');
+	});
+
 	test('should turn object with array into FormData', () => {
 		// Arrange
 		const input = { a: 'b', c: ['d', 'f'] };
@@ -138,7 +151,8 @@ describe('formdataBodySerializer', () => {
 		expect(result.get('filename')).toBe('uploaded-file');
 		expect(result.get('description')).toBe('A test file');
 		expect(result.get('file')).toBe(file);
-		expect(result.get('metadata')).toBe('[object Object]');
+		expect(result.get('metadata.type')).toBe('document');
+		expect(result.get('metadata.size')).toBe('1024');
 	});
 });
 

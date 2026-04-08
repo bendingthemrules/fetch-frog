@@ -9,16 +9,23 @@ export function formdataBodySerializer<T extends Record<string, any>>(body?: T):
 
 	if (!body) return formData as unknown as T;
 
-	for (const [k, v] of Object.entries(body)) {
-		if (Array.isArray(v)) {
-			for (const item of v) {
-				formData.append(k, item);
-			}
-			continue;
-		}
+	function append(obj: Record<string, any>, prefix?: string) {
+		for (const [k, v] of Object.entries(obj)) {
+			const key = prefix ? `${prefix}.${k}` : k;
 
-		formData.append(k, v);
+			if (Array.isArray(v)) {
+				for (const item of v) {
+					formData.append(key, item);
+				}
+			} else if (v !== null && typeof v === 'object' && !(v instanceof File) && !(v instanceof Blob)) {
+				append(v, key);
+			} else {
+				formData.append(key, v);
+			}
+		}
 	}
+
+	append(body);
 
 	// @ts-expect-error type tomfoolery
 	return formData;
