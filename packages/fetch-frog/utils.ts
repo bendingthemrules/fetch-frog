@@ -43,7 +43,7 @@ export function containsFileOrBlob(body: Record<string, any> | FormData) {
 	for (const v of Object.values(body)) {
 		if (v instanceof File || v instanceof Blob) return true;
 
-		if (typeof v === 'object' && containsFileOrBlob(v)) return true;
+		if (v !== null && typeof v === 'object' && containsFileOrBlob(v)) return true;
 
 		// no need to check for arrays, they are handled by Object.values
 	}
