@@ -139,22 +139,25 @@ describe('createReactiveApi', () => {
 		expect(api.status).toBe('success');
 	});
 
-	testWithEffect('immediate: false should not auto-fetch when watched deps change before manual refresh', async () => {
-		let count = $state(1);
+	testWithEffect(
+		'immediate: false should not auto-fetch when watched deps change before manual refresh',
+		async () => {
+			let count = $state(1);
 
-		const spy = vi.fn(async () => ({ data: count, error: null }));
-		const api = createReactiveApi(() => spy(), { immediate: false });
+			const spy = vi.fn(async () => ({ data: count, error: null }));
+			const api = createReactiveApi(() => spy(), { immediate: false });
 
-		expect(spy).not.toHaveBeenCalled();
+			expect(spy).not.toHaveBeenCalled();
 
-		// change a watched dep before any manual refresh
-		count = 2;
-		flushSync();
-		await new Promise((resolve) => setTimeout(resolve, 0));
+			// change a watched dep before any manual refresh
+			count = 2;
+			flushSync();
+			await new Promise((resolve) => setTimeout(resolve, 0));
 
-		// should still not have fetched — user hasn't called refresh() yet
-		expect(spy).not.toHaveBeenCalled();
-	});
+			// should still not have fetched — user hasn't called refresh() yet
+			expect(spy).not.toHaveBeenCalled();
+		}
+	);
 
 	testWithEffect('immediate: false should allow watch after first manual refresh', async () => {
 		let count = $state(1);

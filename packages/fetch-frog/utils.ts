@@ -17,7 +17,12 @@ export function formdataBodySerializer<T extends Record<string, any>>(body?: T):
 				for (const item of v) {
 					formData.append(key, item);
 				}
-			} else if (v !== null && typeof v === 'object' && !(v instanceof File) && !(v instanceof Blob)) {
+			} else if (
+				v !== null &&
+				typeof v === 'object' &&
+				!(v instanceof File) &&
+				!(v instanceof Blob)
+			) {
 				append(v, key);
 			} else {
 				formData.append(key, v);
