@@ -36,7 +36,7 @@ export function createUseFetchClient<Paths, Lazy extends boolean = boolean>(
 			// generate a key based on baseUrl, urlPath, query and method
 			const segments = [
 				baseUrl,
-				toValue(fillPath(toValue(url), options.path)),
+				fillPath(toValue(url), options.path),
 				toValue(options.method)?.toUpperCase() || 'GET'
 			];
 
