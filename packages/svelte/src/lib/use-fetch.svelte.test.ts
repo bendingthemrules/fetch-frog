@@ -6,9 +6,9 @@ import { testWithEffect } from './test-utils.svelte.js';
 describe('createReactiveApi', () => {
 	testWithEffect('sets success state and data when promise resolves', async () => {
 		const spy = vi.fn(async () => ({ data: 123, error: null }));
-		const api = createReactiveApi(spy, { immediate: false });
+		const api = createReactiveApi(spy, { immediate: false, watch: false });
 
-		expect(api.status).toBe<'loading' | LoadingState>('loading');
+		expect(api.status).toBe<'idle' | LoadingState>('idle');
 		expect(api.data).toBeNull();
 		expect(api.error).toBeNull();
 
@@ -91,5 +91,93 @@ describe('createReactiveApi', () => {
 		await new Promise((resolve) => setTimeout(resolve, 0)); // wait for the api to update
 
 		expect(data).toBe(2);
+	});
+
+	testWithEffect('immediate: true should fetch on creation', async () => {
+		const spy = vi.fn(async () => ({ data: 'hello', error: null }));
+		const api = await createReactiveApi(spy, { immediate: true });
+
+		expect(spy).toHaveBeenCalledTimes(1);
+		expect(api.status).toBe('success');
+		expect(api.data).toBe('hello');
+	});
+
+	testWithEffect('immediate: true should re-fetch when watched deps change', async () => {
+		let count = $state(1);
+
+		const spy = vi.fn(async () => ({ data: count, error: null }));
+		const api = await createReactiveApi(() => spy(), { immediate: true });
+
+		expect(spy).toHaveBeenCalledTimes(1);
+		expect(api.data).toBe(1);
+
+		count = 2;
+		flushSync();
+		await new Promise((resolve) => setTimeout(resolve, 0));
+
+		expect(spy).toHaveBeenCalledTimes(2);
+		expect(api.data).toBe(2);
+	});
+
+	testWithEffect('immediate: false should not fetch on creation', async () => {
+		const spy = vi.fn(async () => ({ data: 'hello', error: null }));
+		const api = createReactiveApi(spy, { immediate: false });
+
+		expect(spy).not.toHaveBeenCalled();
+		expect(api.data).toBeNull();
+		expect(api.error).toBeNull();
+	});
+
+	testWithEffect('immediate: false should have idle status before first fetch', async () => {
+		const spy = vi.fn(async () => ({ data: 'hello', error: null }));
+		const api = createReactiveApi(spy, { immediate: false });
+
+		expect(api.status).toBe('idle');
+
+		await api.refresh();
+
+		expect(api.status).toBe('success');
+	});
+
+	testWithEffect('immediate: false should not auto-fetch when watched deps change before manual refresh', async () => {
+		let count = $state(1);
+
+		const spy = vi.fn(async () => ({ data: count, error: null }));
+		const api = createReactiveApi(() => spy(), { immediate: false });
+
+		expect(spy).not.toHaveBeenCalled();
+
+		// change a watched dep before any manual refresh
+		count = 2;
+		flushSync();
+		await new Promise((resolve) => setTimeout(resolve, 0));
+
+		// should still not have fetched — user hasn't called refresh() yet
+		expect(spy).not.toHaveBeenCalled();
+	});
+
+	testWithEffect('immediate: false should allow watch after first manual refresh', async () => {
+		let count = $state(1);
+
+		const spy = vi.fn(async () => ({ data: count, error: null }));
+		const api = createReactiveApi(() => spy(), { immediate: false, watch: true });
+
+		expect(spy).not.toHaveBeenCalled();
+
+		// manually trigger the first fetch
+		await api.refresh();
+		expect(api.data).toBe(1);
+
+		// let the effect settle after activation
+		await new Promise((resolve) => setTimeout(resolve, 0));
+		spy.mockClear();
+
+		// now change a watched dep — should trigger a re-fetch
+		count = 2;
+		flushSync();
+		await new Promise((resolve) => setTimeout(resolve, 0));
+
+		expect(spy).toHaveBeenCalledTimes(1);
+		expect(api.data).toBe(2);
 	});
 });

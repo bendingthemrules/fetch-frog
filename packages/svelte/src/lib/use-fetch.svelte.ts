@@ -1,6 +1,6 @@
 import { defu } from 'defu';
 
-export type LoadingState = 'loading' | 'success' | 'error';
+export type LoadingState = 'idle' | 'loading' | 'success' | 'error';
 
 type ApiResponse =
 	| {
@@ -24,86 +24,57 @@ export type ReactiveApiFacade<T extends ApiResponse> = {
 	refresh: () => Promise<void>;
 };
 
-/** @deprecated use createReactiveApi instead */
-export class ReactiveApi<T extends ApiResponse> {
-	status = $state<LoadingState>('loading');
-	data: T['data'] | null = $state(null);
-	error: T['error'] | null = $state(null);
-
-	// private
-	#promiseFn: (() => Promise<T>) | null = $state(null);
-
-	constructor(promise: () => Promise<T>, options: ReactiveApiOptions = {}) {
-		const defaultOptions: ReactiveApiOptions = {
-			immediate: true,
-			watch: true
-		};
-		options = defu(options, defaultOptions);
-
-		this.#promiseFn = promise;
-
-		$effect(() => {
-			if (!options.watch) {
-				return;
-			}
-
-			if (!options.immediate) {
-				options.immediate = true;
-				return;
-			}
-
-			this.refresh();
-		});
-	}
-
-	refresh = async () => {
-		if (!this.#promiseFn) {
-			return;
-		}
-
-		this.status = 'loading';
-		this.error = null;
-
-		const { data, error } = await this.#promiseFn();
-
-		if (data) {
-			this.data = data;
-			this.status = 'success';
-		} else {
-			this.error = error;
-			this.status = 'error';
-		}
-	};
-}
-
 export function createReactiveApi<T extends ApiResponse>(
 	promise: () => Promise<T>,
 	options: ReactiveApiOptions = {}
 ): ReactiveApiFacade<T> & Promise<ReactiveApiFacade<T>> {
-	let status = $state<LoadingState>('loading');
-	let data: T['data'] | null = $state(null);
-	let error: T['error'] | null = $state(null);
-
 	const defaultOptions: ReactiveApiOptions = {
 		immediate: true,
 		watch: true
 	};
 	options = defu(options, defaultOptions);
 
+	let status = $state<LoadingState>(options.immediate ? 'loading' : 'idle');
+	let data: T['data'] | null = $state(null);
+	let error: T['error'] | null = $state(null);
+	let activated = $state(options.immediate!);
+	let fetchId = 0;
+
+	let initialRefresh: Promise<void> | null = null;
+
 	$effect(() => {
-		if (!options.watch) {
+		if (!options.watch || !activated) {
 			return;
 		}
 
-		if (!options.immediate) {
-			options.immediate = true;
-			return;
-		}
-
-		refresh();
+		initialRefresh = effectFetch();
 	});
 
+	async function effectFetch() {
+		const id = ++fetchId;
+
+		status = 'loading';
+		error = null;
+
+		const result = await promise();
+
+		if (id !== fetchId) return;
+
+		if (result.data) {
+			data = result.data;
+			status = 'success';
+		} else {
+			error = result.error;
+			status = 'error';
+		}
+	}
+
 	async function refresh() {
+		if (!activated) activated = true;
+
+		// invalidate any in-flight effect fetches
+		fetchId++;
+
 		status = 'loading';
 		error = null;
 
@@ -134,9 +105,7 @@ export function createReactiveApi<T extends ApiResponse>(
 		then(resolve: (value: ReactiveApiFacade<T>) => void, reject: (reason: unknown) => void) {
 			(async () => {
 				try {
-					await refresh();
-
-					status = 'success';
+					await (initialRefresh ?? refresh());
 
 					resolve({
 						get data() {
