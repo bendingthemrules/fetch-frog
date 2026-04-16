@@ -1,7 +1,7 @@
 <div align="center">
-    <center>
-        <img width="120" height="120" src="./assets/FetchFrog.png" alt="fetch frog" align="center">
-    </center>
+
+![fetch frog](./assets/FetchFrog.png)
+
 </div>
 
 <div align="center">
