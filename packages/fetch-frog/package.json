@@ -52,7 +52,7 @@
 	"dependencies": {
 		"defu": "^6.1.4",
 		"ofetch": "^1.4.1",
-		"openapi-typescript": "6.7.5",
+		"openapi-typescript": "^7.13.0",
 		"openapi-typescript-helpers": "^0.0.7",
 		"swagger2openapi": "^7.0.8",
 		"yargs-parser": "^21.1.1"

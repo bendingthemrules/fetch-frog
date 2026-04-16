@@ -6,10 +6,7 @@
 
 - 4e8abe1: - Fix path parameter replacement not replacing all occurrences
   - Support nested objects in formdata serializer
-  - Improve cache key generation
-  - Performance optimizations (early null checks, remove toValue calls)
-  - Improve and test Svelte client
-  - Add Nuxt functionality tests
+  - Early null check performance optimization
 
 ## 0.0.2
 
