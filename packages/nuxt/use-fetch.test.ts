@@ -1,6 +1,6 @@
 // @vitest-environment nuxt
-import { afterEach, describe, expect, test } from 'vitest';
-import { ref, nextTick } from 'vue';
+import { afterEach, describe, expect, test, vi } from 'vitest';
+import { ref } from 'vue';
 import { registerEndpoint } from '@nuxt/test-utils/runtime';
 import { createUseFetchClient } from './index';
 
@@ -70,11 +70,10 @@ describe('createUseFetchClient', () => {
 		expect(result.data.value).toEqual({ id: 1 });
 
 		petId.value = 2;
-		await nextTick();
-		// watchers in useFetch debounce to a microtask; give them one more tick
-		await new Promise((resolve) => setTimeout(resolve, 0));
 
-		expect(hits).toEqual(['1', '2']);
-		expect(result.data.value).toEqual({ id: 2 });
+		await vi.waitFor(() => {
+			expect(hits).toEqual(['1', '2']);
+			expect(result.data.value).toEqual({ id: 2 });
+		});
 	});
 });
