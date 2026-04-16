@@ -1,6 +1,6 @@
 {
 	"name": "fetch-frog",
-	"version": "0.1.0-beta.0",
+	"version": "0.1.0-beta.1",
 	"private": false,
 	"description": "Type safe api clients using OpenApi Spec",
 	"repository": {

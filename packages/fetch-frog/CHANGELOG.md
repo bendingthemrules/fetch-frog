@@ -1,5 +1,11 @@
 # fetch-frog
 
+## 0.1.0-beta.1
+
+### Patch Changes
+
+- b58e18d: Bump openapi-typescript to v7
+
 ## 0.1.0-beta.0
 
 ### Minor Changes

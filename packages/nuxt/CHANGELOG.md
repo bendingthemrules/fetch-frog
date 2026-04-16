@@ -1,5 +1,12 @@
 # @fetch-frog/nuxt
 
+## 0.1.0-beta.1
+
+### Patch Changes
+
+- Updated dependencies [b58e18d]
+  - fetch-frog@0.1.0-beta.1
+
 ## 0.1.0-beta.0
 
 ### Minor Changes
