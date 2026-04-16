@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import converter from 'swagger2openapi';
-import openapiTS from 'openapi-typescript';
+import openapiTS, { astToString } from 'openapi-typescript';
 import { isUrl } from '../utils.js';
 
 /** @type {import('../types').Command} */
@@ -33,7 +33,8 @@ export default async function (flags, _args) {
 		? converter.convertUrl(inputPath, converterOptions)
 		: converter.convertFile(inputPath, converterOptions));
 
-	const types = await openapiTS(output.openapi);
+	const ast = await openapiTS(output.openapi);
+	const types = astToString(ast);
 
 	console.info('Writing result to:', { outputPath });
 	fs.writeFileSync(outputPath, types, 'utf8');
