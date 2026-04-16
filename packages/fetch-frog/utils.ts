@@ -9,16 +9,28 @@ export function formdataBodySerializer<T extends Record<string, any>>(body?: T):
 
 	if (!body) return formData as unknown as T;
 
-	for (const [k, v] of Object.entries(body)) {
-		if (Array.isArray(v)) {
-			for (const item of v) {
-				formData.append(k, item);
-			}
-			continue;
-		}
+	function append(obj: Record<string, any>, prefix?: string) {
+		for (const [k, v] of Object.entries(obj)) {
+			const key = prefix ? `${prefix}.${k}` : k;
 
-		formData.append(k, v);
+			if (Array.isArray(v)) {
+				for (const item of v) {
+					formData.append(key, item);
+				}
+			} else if (
+				v !== null &&
+				typeof v === 'object' &&
+				!(v instanceof File) &&
+				!(v instanceof Blob)
+			) {
+				append(v, key);
+			} else {
+				formData.append(key, v);
+			}
+		}
 	}
+
+	append(body);
 
 	// @ts-expect-error type tomfoolery
 	return formData;
@@ -36,10 +48,9 @@ export function containsFileOrBlob(body: Record<string, any> | FormData) {
 	for (const v of Object.values(body)) {
 		if (v instanceof File || v instanceof Blob) return true;
 
-		if (typeof v === 'object' && containsFileOrBlob(v)) return true;
+		if (v !== null && typeof v === 'object' && containsFileOrBlob(v)) return true;
 
-		if (Array.isArray(v) && v.some((item) => item instanceof File || item instanceof Blob))
-			return true;
+		// no need to check for arrays, they are handled by Object.values
 	}
 
 	return false;
@@ -52,6 +63,6 @@ export function containsFileOrBlob(body: Record<string, any> | FormData) {
  */
 export function fillPath(path: string, params = {} as Record<string, unknown>) {
 	for (const [k, v] of Object.entries(params))
-		path = path.replace(`{${k}}`, encodeURIComponent(String(v)));
+		path = path.replaceAll(`{${k}}`, encodeURIComponent(String(v)));
 	return path;
 }

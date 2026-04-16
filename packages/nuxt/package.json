@@ -4,6 +4,11 @@
 	"private": false,
 	"description": "Nuxt specific implementation of fetch-frog",
 	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/bendingthemrules/fetch-frog",
+		"directory": "packages/nuxt"
+	},
 	"type": "module",
 	"publishConfig": {
 		"access": "public"
@@ -12,15 +17,22 @@
 		"lint": "oxlint",
 		"lint:fix": "oxlint --fix",
 		"fmt": "oxfmt --write .",
-		"fmt:check": "oxfmt --check ."
+		"fmt:check": "oxfmt --check .",
+		"test": "vitest --run"
 	},
 	"dependencies": {
 		"defu": "^6.1.4",
 		"fetch-frog": "workspace:*"
 	},
 	"devDependencies": {
+		"@nuxt/test-utils": "^3.14.0",
+		"@vue/test-utils": "^2.4.6",
+		"happy-dom": "^15.0.0",
+		"nuxt": "^3.13.0",
 		"oxfmt": "catalog:",
-		"oxlint": "catalog:"
+		"oxlint": "catalog:",
+		"vitest": "^3.2.4",
+		"vue": "^3.5.0"
 	},
 	"peerDependencies": {
 		"nuxt": "^3.0.0 || ^4.0.0",

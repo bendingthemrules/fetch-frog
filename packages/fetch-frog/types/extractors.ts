@@ -44,22 +44,6 @@ export type ExtractPathParams<
 		Method,
 		{
 			parameters: {
-				path: infer PathContent extends Record<string, any>;
-			};
-		}
-	>
-		? PathContent
-		: never;
-
-export type ExtractLitePathParams<
-	Paths extends Record<string, any>,
-	Url extends keyof Paths,
-	Method extends keyof Paths[Url] = 'get'
-> =
-	Paths[Url] extends Record<
-		Method,
-		{
-			parameters: {
 				path: infer PathContent;
 			};
 		}
@@ -68,22 +52,6 @@ export type ExtractLitePathParams<
 		: never;
 
 export type ExtractQueryParams<
-	Paths extends Record<string, any>,
-	Url extends keyof Paths,
-	Method extends keyof Paths[Url] = 'get'
-> =
-	Paths[Url] extends Record<
-		Method,
-		{
-			parameters: {
-				query?: infer QueryContent extends Record<string, any>;
-			};
-		}
-	>
-		? QueryContent
-		: never;
-
-export type ExtractLiteQueryParams<
 	Paths extends Record<string, any>,
 	Url extends keyof Paths,
 	Method extends keyof Paths[Url] = 'get'

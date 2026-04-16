@@ -40,8 +40,13 @@ async function main() {
 	await commandFn(flags, args);
 }
 
-main().then(() => {
-	const timeEnd = performance.now();
-	console.info(`Finished in ${Math.round(timeEnd - timeStart)}ms`);
-	process.exit(0);
-});
+main()
+	.then(() => {
+		const timeEnd = performance.now();
+		console.info(`Finished in ${Math.round(timeEnd - timeStart)}ms`);
+		process.exit(0);
+	})
+	.catch((error) => {
+		console.error(error.message);
+		process.exit(1);
+	});

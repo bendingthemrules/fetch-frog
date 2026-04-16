@@ -1,1 +1,1 @@
-export * from './use-fetch.svelte';
+export { createReactiveApi, type LoadingState, type ReactiveApiFacade } from './use-fetch.svelte';

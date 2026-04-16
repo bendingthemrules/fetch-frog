@@ -11,9 +11,7 @@ export type {
 	ExtractResponse,
 	ExtractBody,
 	ExtractPathParams,
-	ExtractQueryParams,
-	ExtractLitePathParams,
-	ExtractLiteQueryParams
+	ExtractQueryParams
 } from './extractors.js';
 
 export type { FetchClient } from './fetch-frog.js';

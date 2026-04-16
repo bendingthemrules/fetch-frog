@@ -1,6 +1,6 @@
 <div align="center">
     <center>
-        <img width="120" height="120" src="assets/FetchFrog.png" alt="fetch frog" align="center">
+        <img width="120" height="120" src="./assets/FetchFrog.png" alt="fetch frog" align="center">
     </center>
 </div>
 

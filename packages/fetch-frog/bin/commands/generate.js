@@ -27,7 +27,7 @@ export default async function (flags, _args) {
 		targetVersion: '3.0.1'
 	};
 
-	console.log('Converting:', { inputPath });
+	console.info('Converting:', { inputPath });
 
 	const output = await (isUrl(inputPath)
 		? converter.convertUrl(inputPath, converterOptions)

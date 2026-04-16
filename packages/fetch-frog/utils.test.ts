@@ -40,6 +40,19 @@ describe('formdataBodySerializer', () => {
 		expect(result.get('c')).toBe('1');
 	});
 
+	test('should turn nested object into FormData with dot notation', () => {
+		// Arrange
+		const input = { user: { name: 'Froggy', address: { city: 'Pond' } } };
+
+		// Act
+		const result = formdataBodySerializer(input) as never as FormData;
+
+		// Assert
+		expect([...result.keys()].length).toBe(2);
+		expect(result.get('user.name')).toBe('Froggy');
+		expect(result.get('user.address.city')).toBe('Pond');
+	});
+
 	test('should turn object with array into FormData', () => {
 		// Arrange
 		const input = { a: 'b', c: ['d', 'f'] };
@@ -225,5 +238,19 @@ describe('fillPath', () => {
 
 		// Assert
 		expect(result).toBe('/pet/photo');
+	});
+
+	test('should fill path with multiple parameters with the same name', () => {
+		// Arrange
+		const path = '/pet/{petId}/photo/{petId}';
+		const params = {
+			petId: 1
+		};
+
+		// Act
+		const result = fillPath(path, params);
+
+		// Assert
+		expect(result).toBe('/pet/1/photo/1');
 	});
 });

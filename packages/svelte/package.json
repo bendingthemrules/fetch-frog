@@ -5,6 +5,11 @@
 		"svelte"
 	],
 	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/bendingthemrules/fetch-frog",
+		"directory": "packages/svelte"
+	},
 	"files": [
 		"dist",
 		"!dist/**/*.test.*",

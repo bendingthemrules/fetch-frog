@@ -1,6 +1,6 @@
 <div align="center">
     <center>
-        <img width="120" height="120" src="assets/FetchFrog.png" alt="fetch frog" align="center">
+        <img width="120" height="120" src="./assets/FetchFrog.png" alt="fetch frog" align="center">
     </center>
 </div>
 
@@ -41,7 +41,7 @@ import type { paths } from "$lib/types/api/v1"; // generated api types
 
 export const apiClient = createFetchClient<paths>(
 	"https://petstore3.swagger.io/api/v3",
-	{}
+	{},
 );
 ```
 
