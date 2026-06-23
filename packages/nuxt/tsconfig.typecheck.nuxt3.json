@@ -1,0 +1,12 @@
+{
+	"extends": "./tsconfig.typecheck.base.json",
+	"compilerOptions": {
+		"baseUrl": ".",
+		"paths": {
+			"nuxt": ["./node_modules/nuxt3"],
+			"nuxt/*": ["./node_modules/nuxt3/*"],
+			"vue": ["./node_modules/vue"],
+			"vue/*": ["./node_modules/vue/*"]
+		}
+	}
+}

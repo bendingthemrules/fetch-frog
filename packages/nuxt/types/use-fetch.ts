@@ -27,7 +27,7 @@ export type UseFetchClient<Paths, Lazy extends boolean = false> = <
 				'lazy'
 			>
 		: UseFetchOptions<Method, LowercasedMethod, Paths[ReqT], ResT, DataT, PickKeys, DefaultT>
-) => AsyncData<PickFrom<DataT, PickKeys> | DefaultT, ErrorT | null>;
+) => AsyncData<PickFrom<DataT, PickKeys> | DefaultT, ErrorT | null | undefined>;
 
 type UseFetchOptions<
 	Method,
