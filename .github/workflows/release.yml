@@ -28,6 +28,9 @@ jobs:
                   node-version: 24
                   cache: "pnpm"
 
+            - name: Upgrade npm for OIDC trusted publishing
+              run: npm install -g npm@latest
+
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
 
@@ -42,4 +45,3 @@ jobs:
                   version: pnpm -w changeset version
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-                  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
