@@ -8,6 +8,7 @@
   },
   "changesets": [
     "light-maps-relate",
+    "nuxt4-usefetch-types",
     "twelve-bugs-hide"
   ]
 }
