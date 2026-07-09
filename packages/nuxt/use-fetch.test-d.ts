@@ -21,3 +21,22 @@ const { data: postData, error: postError } = client('/pet', {
 expectTypeOf(postError.value).extract<null>().toEqualTypeOf<null>();
 expectTypeOf(postError.value).extract<undefined>().toEqualTypeOf<undefined>();
 expectTypeOf(postData).not.toBeAny();
+
+// A spec-defined `in: header` parameter is passed under `headers` (plural),
+// and you can still add your own extra headers alongside the typed one.
+client('/pet/{petId}', {
+	method: 'DELETE',
+	path: { petId: 1 },
+	headers: { api_key: 'secret', authorization: 'Bearer token' }
+});
+
+// The singular `header` key is not a recognized spec parameter.
+client('/pet/{petId}', {
+	method: 'DELETE',
+	path: { petId: 1 },
+	// @ts-expect-error `header` is not a valid option; use `headers`
+	header: { api_key: 'secret' }
+});
+
+// On an operation without any spec header params, arbitrary headers still work.
+client('/pet/{petId}', { path: { petId: 1 }, headers: { 'x-trace-id': 'abc' } });
