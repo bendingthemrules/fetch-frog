@@ -1,5 +1,11 @@
 # fetch-frog
 
+## 0.1.0-beta.2
+
+### Patch Changes
+
+- 5b029d7: Fix `in: header` parameters being surfaced under `header` instead of `headers`.
+
 ## 0.1.0-beta.1
 
 ### Patch Changes

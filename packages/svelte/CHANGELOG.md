@@ -1,5 +1,12 @@
 # @fetch-frog/svelte
 
+## 0.1.0-beta.3
+
+### Patch Changes
+
+- Updated dependencies [5b029d7]
+  - fetch-frog@0.1.0-beta.2
+
 ## 0.1.0-beta.2
 
 ### Patch Changes
