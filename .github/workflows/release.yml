@@ -29,7 +29,10 @@ jobs:
                   cache: "pnpm"
 
             - name: Upgrade npm for OIDC trusted publishing
-              run: npm install -g npm@latest
+              # Pin to the 11.x line: npm 12.0.0 ships a broken provenance path
+              # (MODULE_NOT_FOUND 'sigstore'). 11.x supports trusted publishing
+              # (>= 11.5.1) without the bug. See npm/cli#9722.
+              run: npm install -g npm@11
 
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
