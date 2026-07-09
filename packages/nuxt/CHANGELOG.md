@@ -1,5 +1,13 @@
 # @fetch-frog/nuxt
 
+## 0.1.0-beta.3
+
+### Patch Changes
+
+- 5b029d7: Fix `in: header` parameters being surfaced under `header` instead of `headers`.
+- Updated dependencies [5b029d7]
+  - fetch-frog@0.1.0-beta.2
+
 ## 0.1.0-beta.2
 
 ### Patch Changes
