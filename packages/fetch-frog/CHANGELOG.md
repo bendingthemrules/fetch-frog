@@ -1,5 +1,11 @@
 # fetch-frog
 
+## 0.1.0-beta.3
+
+### Patch Changes
+
+- 059c4b4: Bump dependencies to address security advisories, including `defu` to fix a prototype-pollution issue.
+
 ## 0.1.0-beta.2
 
 ### Patch Changes
