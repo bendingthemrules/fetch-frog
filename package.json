@@ -23,7 +23,7 @@
 		"oxlint": "catalog:",
 		"prettier": "^3.4.2",
 		"prettier-plugin-svelte": "^3.4.0",
-		"vitest": "^3.2.4"
+		"vitest": "catalog:"
 	},
 	"pnpm": {
 		"onlyBuiltDependencies": [

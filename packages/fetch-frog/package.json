@@ -50,7 +50,7 @@
 		"fmt:check": "oxfmt --check ."
 	},
 	"dependencies": {
-		"defu": "^6.1.4",
+		"defu": "catalog:",
 		"ofetch": "^1.4.1",
 		"openapi-typescript": "^7.13.0",
 		"openapi-typescript-helpers": "^0.0.7",
@@ -58,10 +58,10 @@
 		"yargs-parser": "^21.1.1"
 	},
 	"devDependencies": {
-		"@vitest/coverage-v8": "3.2.4",
+		"@vitest/coverage-v8": "catalog:",
 		"oxfmt": "catalog:",
 		"oxlint": "catalog:",
 		"typescript": "^5.0.0",
-		"vitest": "^3.2.4"
+		"vitest": "catalog:"
 	}
 }
