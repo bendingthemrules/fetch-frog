@@ -1,6 +1,5 @@
 ---
 "fetch-frog": patch
-"@fetch-frog/svelte": patch
 "@fetch-frog/nuxt": patch
 ---
 

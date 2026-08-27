@@ -1,6 +1,5 @@
 ---
 "fetch-frog": minor
-"@fetch-frog/svelte": minor
 "@fetch-frog/nuxt": minor
 ---
 
