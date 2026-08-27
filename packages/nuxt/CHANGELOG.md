@@ -1,5 +1,27 @@
 # @fetch-frog/nuxt
 
+## 0.1.0
+
+### Minor Changes
+
+- 4e8abe1: - Fix path parameter replacement not replacing all occurrences
+  - Support nested objects in formdata serializer
+  - Improve cache key generation
+  - Performance optimizations (early null checks, remove toValue calls)
+  - Improve and test Svelte client
+  - Add Nuxt functionality tests
+
+### Patch Changes
+
+- 059c4b4: Bump dependencies to address security advisories, including `defu` to fix a prototype-pollution issue.
+- 5b029d7: Fix `in: header` parameters being surfaced under `header` instead of `headers`.
+- 1f543b4: Fix Nuxt 4 type compatibility in `UseFetchClient`: widen the `AsyncData` error type to `ErrorT | null | undefined`. Nuxt 4's `useFetch` resolves the error as `ErrorT | undefined` (Nuxt 3 used `| null`), so the hand-declared `ErrorT | null` return no longer matched the implementation and broke type-checking. Keeps Nuxt 3 + 4 dual-support (`peerDependencies` already allow `^3 || ^4`).
+- Updated dependencies [059c4b4]
+- Updated dependencies [5b029d7]
+- Updated dependencies [4e8abe1]
+- Updated dependencies [b58e18d]
+  - fetch-frog@0.1.0
+
 ## 0.1.0-beta.4
 
 ### Patch Changes
