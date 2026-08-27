@@ -1,5 +1,11 @@
 # @fetch-frog/svelte
 
+## 0.1.0-beta.5
+
+### Patch Changes
+
+- a0b3ea1: Bump `fetch-frog` dependency to the stable 0.1.0 release.
+
 ## 0.1.0-beta.4
 
 ### Patch Changes

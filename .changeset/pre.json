@@ -6,5 +6,7 @@
     "@fetch-frog/nuxt": "0.1.0",
     "@fetch-frog/svelte": "0.1.0-beta.4"
   },
-  "changesets": []
+  "changesets": [
+    "svelte-track-stable-core"
+  ]
 }
