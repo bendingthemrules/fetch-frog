@@ -21,7 +21,7 @@ export type FetchClient<Paths> = <
 	options: ClientFetchOptions<Method, LowercasedMethod, Paths[ReqT], PickKeys>
 ) => Promise<{ data: DataT; error: null } | { data: null; error: ErrorT }>;
 
-type ClientFetchOptions<
+export type ClientFetchOptions<
 	Method,
 	LowercasedMethod,
 	Params,

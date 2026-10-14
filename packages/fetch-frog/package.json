@@ -51,7 +51,7 @@
 	},
 	"dependencies": {
 		"defu": "catalog:",
-		"ofetch": "^1.4.1",
+		"ofetch": "catalog:",
 		"openapi-typescript": "^7.13.0",
 		"openapi-typescript-helpers": "^0.0.7",
 		"swagger2openapi": "^7.0.8",

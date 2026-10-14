@@ -7,6 +7,7 @@ import type {
 	ResponseObjectMap,
 	OperationRequestBodyContent
 } from 'openapi-typescript-helpers';
+import type { WithOperation } from './http-errors.js';
 
 export type PickFrom<T, K extends Array<string>> =
 	T extends Array<any>
@@ -25,7 +26,8 @@ export type FetchResponseData<T> = FilterKeys<SuccessResponse<ResponseObjectMap<
 
 export type FetchResponseError<T> = FetchError<
 	FilterKeys<ErrorResponse<ResponseObjectMap<T>>, MediaType>
->;
+> &
+	WithOperation<T>;
 
 export type MethodOption<M, P> = 'get' extends keyof P ? { method?: M } : { method: M };
 

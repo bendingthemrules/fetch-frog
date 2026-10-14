@@ -1,0 +1,15 @@
+{
+	"compilerOptions": {
+		"noEmit": true,
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+		"skipLibCheck": true,
+		"strict": true,
+		"target": "ESNext",
+		"module": "NodeNext",
+		"moduleResolution": "NodeNext",
+		"verbatimModuleSyntax": true
+	},
+	"include": ["*.ts"],
+	"exclude": ["**/*.test.ts", "test/**/*", "node_modules", "dist"]
+}
