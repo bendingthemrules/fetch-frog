@@ -66,3 +66,5 @@ export function fillPath(path: string, params = {} as Record<string, unknown>) {
 		path = path.replaceAll(`{${k}}`, encodeURIComponent(String(v)));
 	return path;
 }
+
+export { selectStatusHandler } from './http-errors.js';

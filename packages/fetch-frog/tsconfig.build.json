@@ -12,6 +12,6 @@
 		"importsNotUsedAsValues": "remove",
 		"newLine": "lf"
 	},
-	"include": ["index.ts", "fetch-frog.ts", "utils.ts", "types/**/*.ts"],
+	"include": ["index.ts", "fetch-frog.ts", "utils.ts", "http-errors.ts", "types/**/*.ts"],
 	"exclude": ["**/*.test.ts", "test/**/*", "node_modules", "dist"]
 }

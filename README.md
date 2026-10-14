@@ -17,6 +17,7 @@
 
 - **[Nuxt](./packages/nuxt/README.md)** - SSR-ready reactive fetching with `useFetch` integration
 - **[Svelte](./packages/svelte/README.md)** - Svelte and SvelteKit optimized implementation _(beta)_
+- **[Effect](./packages/effect/README.md)** - Returns Effects with typed `ResponseError`/`NetworkError` failures _(beta)_
 
 ## Usage
 
@@ -59,6 +60,31 @@ console.log(data);
 ```
 
 This uses [ofetch](https://github.com/unjs/ofetch) under the hood.
+
+## Handling error statuses
+
+`matchHttpError` handles an error by its HTTP status. Every error status documented for the operation needs a handler, so when the spec documents a new one, it's a type error until you handle it.
+
+```ts
+import { matchHttpError } from "fetch-frog";
+
+const { data, error } = await apiClient("/pet/{petId}", {
+	path: { petId: "frog" },
+});
+
+if (error) {
+	const message = matchHttpError(error, {
+		404: (e) => `No pet: ${e.body.message}`, // body typed from the spec's 404 response
+		"5XX": (e) => `Server error ${e.status}`,
+		otherwise: (e) => `Unexpected ${e.status}`, // required unless the spec has `default`
+		network: () => "Offline", // no response: connection refused, aborted, ...
+	});
+}
+```
+
+Handlers are picked by exact status, then `4XX`/`5XX`, then `default`, then `otherwise`. You can also handle an undocumented status explicitly (e.g. `401` from a gateway); its body is `unknown`.
+
+Using [Effect](https://effect.website)? See [@fetch-frog/effect](./packages/effect/README.md).
 
 ## Handling formdata
 

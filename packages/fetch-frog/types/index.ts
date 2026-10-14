@@ -14,4 +14,6 @@ export type {
 	ExtractQueryParams
 } from './extractors.js';
 
-export type { FetchClient } from './fetch-frog.js';
+export type { ClientFetchOptions, FetchClient } from './fetch-frog.js';
+
+export type { HttpError, HttpErrorHandlers, HttpStatusHandlers } from './http-errors.js';
