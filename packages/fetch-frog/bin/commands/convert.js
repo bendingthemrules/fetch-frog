@@ -4,8 +4,8 @@ import converter from 'swagger2openapi';
 import { isUrl } from '../utils.js';
 
 /** @type {import('../types').Command} */
-export default async function (flags, _args) {
-	if (flags['_'].length === 0) {
+export default async function (flags, positionals) {
+	if (positionals.length === 0) {
 		throw new Error('No input file or url specified');
 	}
 	if (!flags.output) {
@@ -15,7 +15,7 @@ export default async function (flags, _args) {
 		throw new Error('Output file must be json');
 	}
 
-	const inputPath = String(flags['_'][0]);
+	const inputPath = positionals[0];
 	const outputPath = path.resolve(process.cwd(), flags.output);
 
 	/**

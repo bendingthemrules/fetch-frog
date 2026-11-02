@@ -33,6 +33,9 @@
 			"import": "./dist/utils.js"
 		}
 	},
+	"engines": {
+		"node": ">=20"
+	},
 	"publishConfig": {
 		"access": "public"
 	},
@@ -54,8 +57,7 @@
 		"ofetch": "^1.4.1",
 		"openapi-typescript": "^7.13.0",
 		"openapi-typescript-helpers": "^0.0.7",
-		"swagger2openapi": "^7.0.8",
-		"yargs-parser": "^21.1.1"
+		"swagger2openapi": "^7.0.8"
 	},
 	"devDependencies": {
 		"@vitest/coverage-v8": "catalog:",

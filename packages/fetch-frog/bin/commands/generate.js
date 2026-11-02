@@ -5,8 +5,8 @@ import openapiTS, { astToString } from 'openapi-typescript';
 import { isUrl } from '../utils.js';
 
 /** @type {import('../types').Command} */
-export default async function (flags, _args) {
-	if (flags['_'].length === 0) {
+export default async function (flags, positionals) {
+	if (positionals.length === 0) {
 		throw new Error('No input file or url specified');
 	}
 
@@ -17,7 +17,7 @@ export default async function (flags, _args) {
 		throw new Error('Output file must be typescript');
 	}
 
-	const inputPath = String(flags['_'][0]);
+	const inputPath = positionals[0];
 	const outputPath = path.resolve(process.cwd(), flags.output);
 
 	/**
