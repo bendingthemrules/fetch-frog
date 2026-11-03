@@ -1,3 +1,6 @@
-import { Arguments } from 'yargs-parser';
+export type Flags = {
+	input?: string;
+	output?: string;
+};
 
-export type Command = (flags: Arguments, args: string[]) => Promise<void> | void;
+export type Command = (flags: Flags, positionals: string[]) => Promise<void> | void;

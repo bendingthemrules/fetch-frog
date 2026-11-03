@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import parser from 'yargs-parser';
+import { parseArgs } from 'node:util';
 
 import convert from './commands/convert.js';
 import generate from './commands/generate.js';
@@ -13,19 +13,17 @@ const commands = {
 
 const timeStart = performance.now();
 
-/** @type {string[]} */
-const [, , ...args] = process.argv;
-
-const flags = parser(args, {
-	string: ['input', 'output'],
-	alias: {
-		input: ['i'],
-		output: ['o']
-	}
-});
-
 async function main() {
-	const command = flags['_'].shift();
+	const { values, positionals } = parseArgs({
+		args: process.argv.slice(2),
+		allowPositionals: true,
+		options: {
+			input: { type: 'string', short: 'i' },
+			output: { type: 'string', short: 'o' }
+		}
+	});
+
+	const command = positionals.shift();
 
 	if (!command) {
 		throw new Error('No command specified');
@@ -37,7 +35,7 @@ async function main() {
 		throw new Error('Unknown command');
 	}
 
-	await commandFn(flags, args);
+	await commandFn(values, positionals);
 }
 
 main()
