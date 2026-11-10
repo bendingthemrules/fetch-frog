@@ -68,6 +68,6 @@ const { data } = await apiClient('/pet/{petId}', {
 
 ## Development
 
-The package supports Nuxt 4 (`^4.0.0`). `pnpm test:types` type-checks the package against the Nuxt version in devDependencies via tsconfig.typecheck.json.
+The package supports Nuxt 4.6.1 and up (`^4.6.1`). `pnpm test:types` type-checks the package against the Nuxt version in devDependencies via tsconfig.typecheck.json.
 
 `pnpm test` runs both the type-check and the unit tests.

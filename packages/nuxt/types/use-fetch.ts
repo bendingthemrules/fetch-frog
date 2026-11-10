@@ -1,10 +1,13 @@
-import type { AsyncData, UseFetchOptions as NuxtUseFetchOptions } from 'nuxt/app';
+import type {
+	AsyncData,
+	KeysOf,
+	PickFrom,
+	UseFetchOptions as NuxtUseFetchOptions
+} from 'nuxt/app';
 import type {
 	FetchResponseData,
 	FetchResponseError,
-	KeysOf,
 	ParamsOption,
-	PickFrom,
 	RequestBodyOption
 } from 'fetch-frog/types';
 import type { ComputedOptions, ComputedMethodOption } from './utils';

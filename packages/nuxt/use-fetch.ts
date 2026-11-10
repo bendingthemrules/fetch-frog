@@ -31,10 +31,7 @@ export function createUseFetchClient<Paths, Lazy extends boolean = boolean>(
 	defaults: UseFetchOptions<any>,
 	lazy?: Lazy
 ): UseFetchClient<Paths, Lazy> {
-	// Cast: Nuxt's internal PickFrom differs between versions (changed in 4.6), so
-	// useFetch's return type can't be proven assignable for generic params. Our
-	// UseFetchClient type is self-contained and resolves identically for concrete types.
-	return ((url: string | (() => string), options: any) => {
+	return (url: string | (() => string), options: any) => {
 		if (!options.key) {
 			// generate a key based on baseUrl, urlPath, query and method
 			const segments = [
@@ -60,5 +57,5 @@ export function createUseFetchClient<Paths, Lazy extends boolean = boolean>(
 		const merged = defu(lazy ? { ...opts, lazy } : opts, defaults);
 
 		return useFetch(filledPath, merged);
-	}) as UseFetchClient<Paths, Lazy>;
+	};
 }

@@ -2,6 +2,6 @@
 '@fetch-frog/nuxt': minor
 ---
 
-**Breaking:** drop Nuxt 3 support, as Nuxt 3 is end-of-life. The `nuxt` peer dependency is now `^4.0.0`.
+**Breaking:** the `nuxt` peer dependency is now `^4.6.1`. Nuxt 3 (end-of-life) and Nuxt 4.0–4.6.0 are no longer supported.
 
-Also fixes a type error in `createUseFetchClient` with Nuxt 4.6+, where Nuxt's `PickFrom` type changed.
+`createUseFetchClient`'s types now use Nuxt's own `PickFrom` and `KeysOf` helpers (exported from `nuxt/app` since Nuxt 4.6.1), so the `data` type always matches what Nuxt's `useFetch` returns. This also fixes a type error with Nuxt 4.6+.
