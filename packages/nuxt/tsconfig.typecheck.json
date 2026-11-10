@@ -11,6 +11,14 @@
 		"resolveJsonModule": true,
 		"types": []
 	},
-	"include": ["index.ts", "use-fetch.ts", "utils.ts", "types/**/*.ts", "use-fetch.test-d.ts"],
+	"include": [
+		"index.ts",
+		"use-fetch.ts",
+		"utils.ts",
+		"types/**/*.ts",
+		"use-fetch.test-d.ts",
+		"test/e2e/app/api.ts",
+		"test/e2e/app/server/**/*.ts"
+	],
 	"exclude": ["node_modules", "playground", "**/*.test.ts"]
 }

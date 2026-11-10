@@ -24,8 +24,10 @@
 		"lint:fix": "oxlint --fix",
 		"fmt": "oxfmt --write .",
 		"fmt:check": "oxfmt --check .",
+		"generate:e2e-types": "pnpm --filter fetch-frog exec openapi-typescript \"$PWD/test/e2e/app/openapi.yaml\" -o \"$PWD/test/e2e/app/api.ts\" && oxfmt test/e2e/app/api.ts",
 		"test:types": "tsc -p tsconfig.typecheck.json",
-		"test": "pnpm test:types && vitest --run"
+		"test:e2e": "vitest --run --config vitest.e2e.config.ts",
+		"test": "pnpm test:types && vitest --run && pnpm test:e2e"
 	},
 	"dependencies": {
 		"defu": "catalog:",
@@ -34,10 +36,12 @@
 	"devDependencies": {
 		"@nuxt/test-utils": "^4.4.0",
 		"@vue/test-utils": "^2.4.6",
+		"h3": "^1.15.11",
 		"happy-dom": "^20.0.0",
 		"nuxt": "^4.6.4",
 		"oxfmt": "catalog:",
 		"oxlint": "catalog:",
+		"playwright-core": "^1.65.0",
 		"typescript": "^7.0.2",
 		"vitest": "^4.1.12",
 		"vue": "^3.5.0"
