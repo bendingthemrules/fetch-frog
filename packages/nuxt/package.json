@@ -42,7 +42,7 @@
 		"nuxt4": "npm:nuxt@^4.0.0",
 		"oxfmt": "catalog:",
 		"oxlint": "catalog:",
-		"typescript": "^5.0.0",
+		"typescript": "^7.0.2",
 		"vitest": "catalog:",
 		"vue": "^3.5.0"
 	},

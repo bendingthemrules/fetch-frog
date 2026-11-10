@@ -1,7 +1,6 @@
 {
 	"extends": "./tsconfig.typecheck.base.json",
 	"compilerOptions": {
-		"baseUrl": ".",
 		"paths": {
 			"nuxt": ["./node_modules/nuxt4"],
 			"nuxt/*": ["./node_modules/nuxt4/*"],
