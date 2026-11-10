@@ -68,6 +68,6 @@ const { data } = await apiClient('/pet/{petId}', {
 
 ## Development
 
-The package supports Nuxt 3 and Nuxt 4 as peers, so `pnpm test:types` runs tsc twice via tsconfig.typecheck.nuxt{3,4}.json, which remap nuxt to the pinned nuxt3 / nuxt4 aliases in devDependencies.
+The package supports Nuxt 4.6.1 and up (`^4.6.1`). `pnpm test:types` type-checks the package against the Nuxt version in devDependencies via tsconfig.typecheck.json.
 
-`pnpm test` runs both the type-checks and the unit tests.
+`pnpm test` runs both the type-check and the unit tests.
