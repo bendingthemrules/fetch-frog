@@ -28,6 +28,8 @@ catalogs:
       specifier: ^3.2.7
       version: 3.2.7
 
+packageExtensionsChecksum: sha256-HwOqqqoXiXbH67FBT3TZoH6PdQbLJpcmJ27II4yJk2w=
+
 importers:
 
   .:
@@ -1605,6 +1607,7 @@ packages:
     hasBin: true
     peerDependencies:
       svelte: ^3.44.0 || ^4.0.0 || ^5.0.0-next.1
+      typescript: ^5.0.0 || ^6.0.0
 
   '@sveltejs/vite-plugin-svelte-inspector@5.0.2':
     resolution: {integrity: sha512-TZzRTcEtZffICSAoZGkPSl6Etsj2torOVrx6Uw0KpXxrec9Gg6jFWQ60Q3+LmNGfZSxHRCZL7vXVZIWmuV50Ig==}
@@ -6805,8 +6808,7 @@ snapshots:
       semver: 7.8.6
       svelte: 5.57.3(@typescript-eslint/types@8.72.2)
       svelte2tsx: 0.7.63(svelte@5.57.3(@typescript-eslint/types@8.72.2))(typescript@6.0.3)
-    transitivePeerDependencies:
-      - typescript
+      typescript: 6.0.3
 
   '@sveltejs/vite-plugin-svelte-inspector@5.0.2(@sveltejs/vite-plugin-svelte@6.2.4(svelte@5.57.3(@typescript-eslint/types@8.72.2))(vite@7.3.8(@types/node@26.6.6)(jiti@2.7.0)(lightningcss@1.33.0)(terser@5.51.2)(yaml@2.9.0)))(svelte@5.57.3(@typescript-eslint/types@8.72.2))(vite@7.3.8(@types/node@26.6.6)(jiti@2.7.0)(lightningcss@1.33.0)(terser@5.51.2)(yaml@2.9.0))':
     dependencies:
