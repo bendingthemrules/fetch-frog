@@ -1,10 +1,10 @@
 {
-  "mode": "exit",
+  "mode": "pre",
   "tag": "beta",
   "initialVersions": {
     "fetch-frog": "0.1.0",
     "@fetch-frog/nuxt": "0.1.0",
-    "@fetch-frog/svelte": "0.1.0-beta.4"
+    "@fetch-frog/svelte": "0.1.0-beta.5"
   },
   "changesets": [
     "svelte-track-stable-core"
