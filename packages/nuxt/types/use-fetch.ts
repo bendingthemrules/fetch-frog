@@ -16,7 +16,7 @@ export type UseFetchClient<Paths, Lazy extends boolean = false> = <
 	ErrorT = FetchResponseError<Paths[ReqT][DefaultMethod]>,
 	DataT = ResT,
 	PickKeys extends KeysOf<DataT> = KeysOf<DataT>,
-	DefaultT = null
+	DefaultT = undefined
 >(
 	url: ReqT | (() => ReqT),
 	options: Lazy extends true
@@ -25,7 +25,7 @@ export type UseFetchClient<Paths, Lazy extends boolean = false> = <
 				'lazy'
 			>
 		: UseFetchOptions<Method, LowercasedMethod, Paths[ReqT], ResT, DataT, PickKeys, DefaultT>
-) => AsyncData<PickFrom<DataT, PickKeys> | DefaultT, ErrorT | null | undefined>;
+) => AsyncData<PickFrom<DataT, PickKeys> | DefaultT, ErrorT | undefined>;
 
 type UseFetchOptions<
 	Method,
@@ -34,7 +34,7 @@ type UseFetchOptions<
 	ResT,
 	DataT = ResT,
 	PickKeys extends KeysOf<DataT> = KeysOf<DataT>,
-	DefaultT = null,
+	DefaultT = undefined,
 	Operation = 'get' extends LowercasedMethod
 		? 'get' extends keyof Params
 			? Params['get']
