@@ -32,29 +32,9 @@ export function createUseFetchClient<Paths, Lazy extends boolean = boolean>(
 	lazy?: Lazy
 ): UseFetchClient<Paths, Lazy> {
 	return (url: string | (() => string), options: any) => {
-		if (!options.key) {
-			// generate a key based on baseUrl, urlPath, query and method
-			const segments = [
-				baseUrl,
-				fillPath(toValue(url), options.path),
-				toValue(options.method)?.toUpperCase() || 'GET'
-			];
-
-			const query = toValue(options.query) as Record<string, string>;
-			if (query) {
-				const params = new URLSearchParams(query);
-				params.sort();
-				segments.push(params.toString());
-			}
-
-			options.key = segments.join('|');
-		}
-
 		const filledPath = computed(() => fillPath(baseUrl + toValue(url), options.path));
 
-		const opts = { ...options };
-
-		const merged = defu(lazy ? { ...opts, lazy } : opts, defaults);
+		const merged = defu(lazy ? { ...options, lazy } : options, defaults);
 
 		return useFetch(filledPath, merged);
 	};
