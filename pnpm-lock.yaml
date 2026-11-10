@@ -68,9 +68,6 @@ importers:
       swagger2openapi:
         specifier: ^7.0.8
         version: 7.0.8
-      yargs-parser:
-        specifier: ^21.1.1
-        version: 21.1.1
     devDependencies:
       '@vitest/coverage-v8':
         specifier: 'catalog:'
