@@ -1,6 +1,3 @@
-// Shared base for the per-Nuxt-version type-checks. Extended by
-// tsconfig.typecheck.nuxt3.json / tsconfig.typecheck.nuxt4.json — do not run
-// directly: it has no `nuxt` paths remap, so it would resolve the ambient nuxt.
 {
 	"compilerOptions": {
 		"noEmit": true,

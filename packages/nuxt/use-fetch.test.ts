@@ -19,7 +19,7 @@ describe('createUseFetchClient', () => {
 		const client = createUseFetchClient<{ '/ping': { get: unknown } }>('', {});
 		const { data, error } = await client('/ping', {});
 
-		expect(error.value).toBeNull();
+		expect(error.value).toBeUndefined();
 		expect(data.value).toEqual({ message: 'pong' });
 	});
 
@@ -37,7 +37,7 @@ describe('createUseFetchClient', () => {
 		await new Promise((resolve) => setTimeout(resolve, 0));
 
 		expect(hits).toBe(0);
-		expect(result.data.value).toBeNull();
+		expect(result.data.value).toBeUndefined();
 
 		await result.refresh();
 
