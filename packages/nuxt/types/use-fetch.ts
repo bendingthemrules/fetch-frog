@@ -1,9 +1,4 @@
-import type {
-	AsyncData,
-	KeysOf,
-	PickFrom,
-	UseFetchOptions as NuxtUseFetchOptions
-} from 'nuxt/app';
+import type { AsyncData, KeysOf, PickFrom, UseFetchOptions as NuxtUseFetchOptions } from 'nuxt/app';
 import type {
 	FetchResponseData,
 	FetchResponseError,
