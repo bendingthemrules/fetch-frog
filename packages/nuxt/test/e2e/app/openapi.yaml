@@ -1,0 +1,91 @@
+openapi: 3.1.0
+info:
+  title: fetch-frog e2e petstore
+  version: 1.0.0
+paths:
+  /pets/{petId}:
+    get:
+      operationId: getPet
+      parameters:
+        - name: petId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: The pet
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pet'
+        '404':
+          description: No pet with this id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+  /pets/search:
+    get:
+      operationId: searchPets
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Search results
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResult'
+  /pets:
+    post:
+      operationId: createPet
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewPet'
+      responses:
+        '200':
+          description: The created pet
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pet'
+components:
+  schemas:
+    Pet:
+      type: object
+      required: [id, name]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+    NewPet:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+    SearchResult:
+      type: object
+      required: [q, results]
+      properties:
+        q:
+          type: string
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Pet'
+    NotFound:
+      type: object
+      required: [message]
+      properties:
+        message:
+          type: string
