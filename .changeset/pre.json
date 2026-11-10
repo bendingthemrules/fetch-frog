@@ -7,6 +7,10 @@
     "@fetch-frog/svelte": "0.1.0-beta.5"
   },
   "changesets": [
+    "cli-node-parse-args",
+    "fetch-frog-typescript-peer",
+    "nuxt-4-6-types",
+    "nuxt-use-fetch-keys",
     "svelte-track-stable-core"
   ]
 }
