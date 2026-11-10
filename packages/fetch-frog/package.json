@@ -60,8 +60,11 @@
 		"@vitest/coverage-v8": "catalog:",
 		"oxfmt": "catalog:",
 		"oxlint": "catalog:",
-		"typescript": "^5.0.0",
+		"typescript": "^6.0.3",
 		"vitest": "catalog:"
+	},
+	"peerDependencies": {
+		"typescript": "^5.0.0 || ^6.0.0"
 	},
 	"engines": {
 		"node": ">=20"
