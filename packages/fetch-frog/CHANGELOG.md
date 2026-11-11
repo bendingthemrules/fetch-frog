@@ -1,5 +1,15 @@
 # fetch-frog
 
+## 0.2.0
+
+### Minor Changes
+
+- 17d60db: Replace `yargs-parser` with Node's built-in `util.parseArgs` in the CLI. Unknown flags now throw an error, and Node >= 20 is required.
+
+### Patch Changes
+
+- 00847aa: Declare `typescript` (`^5.0.0 || ^6.0.0`) as a peer dependency. The CLI's code generation (via `openapi-typescript`) uses the TypeScript compiler API, which TypeScript 7 no longer ships, so projects on TypeScript 7 now get a peer warning instead of a runtime crash.
+
 ## 0.2.0-beta.0
 
 ### Minor Changes
