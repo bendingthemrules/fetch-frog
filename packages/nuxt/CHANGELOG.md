@@ -1,5 +1,22 @@
 # @fetch-frog/nuxt
 
+## 0.2.0
+
+### Minor Changes
+
+- 5523235: **Breaking:** the `nuxt` peer dependency is now `^4.6.1`. Nuxt 3 (end-of-life) and Nuxt 4.0–4.6.0 are no longer supported.
+
+  `createUseFetchClient`'s types now use Nuxt's own `PickFrom` and `KeysOf` helpers (exported from `nuxt/app` since Nuxt 4.6.1), so the `data` type always matches what Nuxt's `useFetch` returns. This also fixes a type error with Nuxt 4.6+.
+
+  **Breaking (types):** `data` and `error` from `createUseFetchClient` no longer include `null`, matching Nuxt 4, which uses `undefined` for unset values. `error` is now `ErrorT | undefined` and the default for `data` is `undefined`. Replace checks like `error.value === null` with `!error.value` or `=== undefined`.
+
+### Patch Changes
+
+- fd227ba: Let Nuxt generate `useFetch` cache keys instead of building them by hand. Fixes three bugs: a reactive path param changing one caller's data could overwrite another caller's data, requests with different bodies shared a key, and the caller's `options` object was mutated with a generated `key`. Explicit `key` options are unaffected; auto-generated keys now use Nuxt's format.
+- Updated dependencies [17d60db]
+- Updated dependencies [00847aa]
+  - fetch-frog@0.2.0
+
 ## 0.2.0-beta.0
 
 ### Minor Changes
