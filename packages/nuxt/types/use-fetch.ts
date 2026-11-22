@@ -1,5 +1,7 @@
 import type { AsyncData, KeysOf, PickFrom, UseFetchOptions as NuxtUseFetchOptions } from 'nuxt/app';
 import type {
+	BodySerializer,
+	BodySerializerOption,
 	FetchResponseData,
 	FetchResponseError,
 	ParamsOption,
@@ -45,4 +47,13 @@ type UseFetchOptions<
 > = ComputedMethodOption<Method, Params> &
 	ComputedOptions<ParamsOption<Operation>> &
 	ComputedOptions<RequestBodyOption<Operation>> &
+	BodySerializerOption<Operation> &
 	Omit<NuxtUseFetchOptions<ResT, DataT, PickKeys, DefaultT>, 'query' | 'body' | 'method'>;
+
+/**
+ * Client-wide defaults: any Nuxt `useFetch` option, plus a default
+ * `bodySerializer` applied to every request that sends a body.
+ */
+export type UseFetchClientDefaults = NuxtUseFetchOptions<any> & {
+	bodySerializer?: BodySerializer;
+};

@@ -2,7 +2,8 @@
 import { afterEach, describe, expect, test, vi } from 'vitest';
 import { ref } from 'vue';
 import { registerEndpoint } from '@nuxt/test-utils/runtime';
-import { createUseFetchClient } from './index';
+import { readFormData, readRawBody, getRequestHeader } from 'h3';
+import { createUseFetchClient, formdataSerializer, urlencodedSerializer } from './index';
 
 describe('createUseFetchClient', () => {
 	const cleanups: (() => void)[] = [];
@@ -74,6 +75,92 @@ describe('createUseFetchClient', () => {
 		await vi.waitFor(() => {
 			expect(hits).toEqual(['1', '2']);
 			expect(result.data.value).toEqual({ id: 2 });
+		});
+	});
+
+	describe('bodySerializer', () => {
+		type Paths = {
+			'/upload': {
+				post: {
+					requestBody: {
+						content: { 'multipart/form-data': { name: string; file?: Blob } };
+					};
+				};
+			};
+		};
+
+		test('sends the body as FormData', async () => {
+			let received: [string, string][] = [];
+			register('/upload', {
+				method: 'POST',
+				handler: async (event) => {
+					const fd = await readFormData(event);
+					received = [...fd.entries()].map(([k, v]) => [
+						k,
+						typeof v === 'string' ? v : `<file ${(v as File).name}>`
+					]);
+					return { ok: true };
+				}
+			});
+
+			const client = createUseFetchClient<Paths>('', {});
+			const { error } = await client('/upload', {
+				method: 'POST',
+				body: { name: 'frog', file: new File(['x'], 'frog.png') },
+				bodySerializer: formdataSerializer
+			});
+
+			expect(error.value).toBeUndefined();
+			expect(received).toEqual([
+				['name', 'frog'],
+				['file', '<file frog.png>']
+			]);
+		});
+
+		test('uses the client default and resolves refs inside the body', async () => {
+			let contentType: string | undefined;
+			let raw: string | undefined;
+			register('/upload', {
+				method: 'POST',
+				handler: async (event) => {
+					contentType = getRequestHeader(event, 'content-type');
+					raw = await readRawBody(event);
+					return { ok: true };
+				}
+			});
+
+			const name = ref('frog');
+			const client = createUseFetchClient<Paths>('', { bodySerializer: urlencodedSerializer });
+			await client('/upload', { method: 'POST', body: { name } });
+
+			expect(contentType).toMatch(/^application\/x-www-form-urlencoded/);
+			expect(raw).toBe('name=frog');
+		});
+
+		test('re-fetches with a newly serialized body when a ref inside it changes', async () => {
+			const names: string[] = [];
+			register('/upload', {
+				method: 'POST',
+				handler: async (event) => {
+					const fd = await readFormData(event);
+					names.push(String(fd.get('name')));
+					return { ok: true };
+				}
+			});
+
+			const name = ref('frog');
+			const client = createUseFetchClient<Paths>('', {});
+			await client('/upload', {
+				method: 'POST',
+				body: { name },
+				bodySerializer: formdataSerializer
+			});
+
+			expect(names).toEqual(['frog']);
+
+			name.value = 'toad';
+
+			await vi.waitFor(() => expect(names).toEqual(['frog', 'toad']));
 		});
 	});
 });

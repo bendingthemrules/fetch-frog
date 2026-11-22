@@ -1,4 +1,5 @@
 export type {
+	BodySerializerOption,
 	FetchResponseData,
 	FetchResponseError,
 	KeysOf,
@@ -14,4 +15,5 @@ export type {
 	ExtractQueryParams
 } from './extractors.js';
 
-export type { FetchClient } from './fetch-frog.js';
+export type { FetchClient, FetchClientDefaults } from './fetch-frog.js';
+export type { BodySerializer } from '../serializers.js';

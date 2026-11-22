@@ -1,4 +1,5 @@
 import type { FetchError } from 'ofetch';
+import type { BodySerializer } from '../serializers.js';
 import type {
 	ErrorResponse,
 	SuccessResponse,
@@ -45,3 +46,8 @@ export type RequestBodyOption<T> =
 		: undefined extends OperationRequestBodyContent<T>
 			? { body?: OperationRequestBodyContent<T> }
 			: { body: OperationRequestBodyContent<T> };
+
+// `requestBody?: never` resolves to `undefined`, so check the non-nullable part.
+export type BodySerializerOption<T> = [NonNullable<OperationRequestBodyContent<T>>] extends [never]
+	? { bodySerializer?: never }
+	: { bodySerializer?: BodySerializer<NonNullable<OperationRequestBodyContent<T>>> };

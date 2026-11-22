@@ -1,39 +1,16 @@
+import { formdataSerializer } from './serializers.js';
+
 /**
  * Turn an object into FormData while keeping its object type
+ * @deprecated Pass `bodySerializer: formdataSerializer` instead. This helper
+ * builds FormData up front and casts it back to the object type, so hooks and
+ * anything else reading `body` see a FormData typed as a plain object.
  * @template {Record<string, any>} T
  * @param {T} [body] The object to convert to FormData
  * @returns {T} FormData cast to the original type
  */
 export function formdataBodySerializer<T extends Record<string, any>>(body?: T): T {
-	const formData = new FormData();
-
-	if (!body) return formData as unknown as T;
-
-	function append(obj: Record<string, any>, prefix?: string) {
-		for (const [k, v] of Object.entries(obj)) {
-			const key = prefix ? `${prefix}.${k}` : k;
-
-			if (Array.isArray(v)) {
-				for (const item of v) {
-					formData.append(key, item);
-				}
-			} else if (
-				v !== null &&
-				typeof v === 'object' &&
-				!(v instanceof File) &&
-				!(v instanceof Blob)
-			) {
-				append(v, key);
-			} else {
-				formData.append(key, v);
-			}
-		}
-	}
-
-	append(body);
-
-	// @ts-expect-error type tomfoolery
-	return formData;
+	return formdataSerializer(body ?? {}) as unknown as T;
 }
 
 /**
