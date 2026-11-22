@@ -33,6 +33,36 @@ describe('createReactiveApi', () => {
 	// 	expect(api.error).toBe(err);
 	// });
 
+	for (const [label, body] of [
+		['undefined (204 No Content)', undefined],
+		['0', 0],
+		['false', false],
+		['empty string', '']
+	] as const) {
+		testWithEffect(`treats a falsy body (${label}) as success`, async () => {
+			const spy = vi.fn(async () => ({ data: body, error: null }));
+			const api = createReactiveApi(spy, { immediate: false, watch: false });
+
+			await api.refresh();
+
+			expect(api.status).toBe<'success' | LoadingState>('success');
+			expect(api.data).toBe(body);
+			expect(api.error).toBeNull();
+		});
+	}
+
+	testWithEffect('sets error state when the result carries an error', async () => {
+		const err = new Error('boom');
+		const spy = vi.fn(async () => ({ data: null, error: err }));
+		const api = createReactiveApi(spy, { immediate: false, watch: false });
+
+		await api.refresh();
+
+		expect(api.status).toBe<'error' | LoadingState>('error');
+		expect(api.data).toBeNull();
+		expect(api.error).toBe(err);
+	});
+
 	testWithEffect('refresh triggers subsequent calls', async () => {
 		const spy = vi.fn(async () => ({ data: 'ok', error: null }));
 		const api = createReactiveApi(spy, { immediate: false, watch: false });

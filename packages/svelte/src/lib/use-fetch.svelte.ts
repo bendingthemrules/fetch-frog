@@ -60,13 +60,7 @@ export function createReactiveApi<T extends ApiResponse>(
 
 		if (id !== fetchId) return;
 
-		if (result.data) {
-			data = result.data;
-			status = 'success';
-		} else {
-			error = result.error;
-			status = 'error';
-		}
+		applyResult(result);
 	}
 
 	async function refresh() {
@@ -78,9 +72,13 @@ export function createReactiveApi<T extends ApiResponse>(
 		status = 'loading';
 		error = null;
 
-		const result = await promise();
+		applyResult(await promise());
+	}
 
-		if (result.data) {
+	// Success is signalled by the absence of an error, not by truthy data:
+	// a 204 or a falsy body (0, false, '') is still a successful response.
+	function applyResult(result: T) {
+		if (result.error == null) {
 			data = result.data;
 			status = 'success';
 		} else {
