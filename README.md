@@ -16,21 +16,21 @@
 ## Framework Integrations
 
 - **[Nuxt](./packages/nuxt/README.md)** - SSR-ready reactive fetching with `useFetch` integration
-- **[Svelte](./packages/svelte/README.md)** - Svelte and SvelteKit optimized implementation _(beta)_
+- **[Svelte](./packages/svelte/README.md)** - Svelte and SvelteKit optimized implementation
 
 ## Usage
 
 ### Single schema
 
 ```bash
+npx fetch-frog generate schema.yaml -o schema.d.ts
+# or
 pnpm fetch-frog generate schema.yaml -o schema.d.ts
 
-# schema.yaml -> schema.ts
+# schema.yaml -> schema.d.ts
 ```
 
-Supports both json, yml, urls and local file paths
-
-For the full list of options, see [openapi-ts.pages.dev/cli](https://openapi-ts.pages.dev/cli)
+The input can be a local file or a URL, in JSON or YAML, using OpenAPI 3.x or Swagger 2.0 (converted automatically). See [Cli tools](#cli-tools) for details.
 
 ## Using the fetch client
 
@@ -60,63 +60,28 @@ console.log(data);
 
 This uses [ofetch](https://github.com/unjs/ofetch) under the hood.
 
-## Handling formdata
+## Sending FormData and other formats
 
-Fetch Frog provides a `formdataBodySerializer` util function to convert flat objects into formdata while keeping the object type.
+Bodies are sent as JSON by default. Pass a `bodySerializer` to send something else; the `body` stays typed against your schema until the request is made.
 
 ```ts
 import { apiClient } from "$lib/apiClient";
-import { formdataBodySerializer } from "fetch-frog";
+import { formdataSerializer } from "fetch-frog";
 
 const { data } = await apiClient("/pet/{petId}/uploadImage", {
 	path: {
 		petId: "frog",
 	},
 	method: "POST",
-	body: formdataBodySerializer({
+	body: {
 		additionalMetadata: "string",
 		file: new File([""], "frog.png", { type: "image/png" }),
-	}),
+	},
+	bodySerializer: formdataSerializer,
 });
 ```
 
-```ts
-import { apiClient } from "$lib/apiClient";
-import { formdataBodySerializer } from "fetch-frog";
-
-const { data } = await apiClient("/auth/login", {
-	method: "POST",
-	body: formdataBodySerializer({
-		username: "string",
-		password: "string",
-	}),
-});
-```
-
-### Automatic FormData conversion
-
-Fetch Frog provides a `containsFileOrBlob` utility that can detect when your request body contains File or Blob objects, enabling automatic conversion to FormData.
-
-```ts
-import { containsFileOrBlob, formdataBodySerializer } from "fetch-frog";
-
-const requestBody = {
-	name: "Profile picture",
-	file: new File([""], "avatar.jpg", { type: "image/jpeg" }),
-	metadata: "user avatar",
-};
-
-// Check if the body contains files/blobs
-if (containsFileOrBlob(requestBody)) {
-	const { data } = await apiClient("/user/avatar", {
-		method: "POST",
-		body: formdataBodySerializer(requestBody), // convert to FormData while preserving type
-	});
-}
-```
-
-> [!NOTE]
-> If you're using a framework like Nuxt or Svelte, consider using the framework-specific implementations of `containsFileOrBlob` and `formdataBodySerializer`. See [Framework Integrations](#framework-integrations) for more details.
+`formdataSerializer`, `urlencodedSerializer` and `jsonSerializer` are built in, and you can set a default on the client. The Nuxt integration accepts the same option. See the [fetch-frog README](./packages/fetch-frog/README.md#request-body-serializers) for key formats, custom serializers and `containsFileOrBlob`.
 
 ## Examples
 
@@ -124,11 +89,32 @@ An example for creating a reusable wrapper composable, useful for authentication
 
 Storing the body / path- or query parameters / response with types requires extracting a type from the generated openapi ts definitions. Some type helpers are exposed from fetch-frog to help with this: `ExtractResponse, ExtractBody, ExtractQueryParams, ExtractPathParams` where QueryParams and PathParams are reactive to help with UseFetch. For example usage, see [examples/type-extraction-helpers](./example/README.md#type-extraction-helpers)
 
-## Cli tools
+## CLI tools
+
+```bash
+fetch-frog <command> <input> -o <output>
+```
+
+- `<input>`: path or URL (`http://` / `https://`) to a JSON or YAML schema
+- `-o, --output` (required): output file, resolved relative to the current directory
+- `-i, --input`: the input, as an alternative to passing it as an argument
+- `-h, --help`: list the commands, or show details and examples for one (`fetch-frog generate --help`)
+- `-v, --version`: print the version
+
+### Generate
+
+Generate TypeScript types from a schema using [openapi-typescript](https://openapi-ts.pages.dev). Swagger 2.0 input is converted to OpenAPI 3.0.1 first, so no separate `convert` step is needed. The output file must end in `.ts`.
+
+<!-- https://petstore3.swagger.io/ -->
+
+```bash
+fetch-frog generate v3.schema.json -o schema.d.ts
+fetch-frog generate "http://127.0.0.1:8000/api/v1/openapi.json" -o schema.d.ts
+```
 
 ### Convert schema version
 
-Convert a schema from 1.x or 2.x to 3.0.1 using swagger2openapi
+Convert a Swagger 2.0 schema to OpenAPI 3.0.1 using [swagger2openapi](https://github.com/Mermade/oas-kit). The output file must end in `.json`.
 
 <!-- https://editor.swagger.io/?url=https://petstore.swagger.io/v2/swagger.yaml -->
 
@@ -136,15 +122,20 @@ Convert a schema from 1.x or 2.x to 3.0.1 using swagger2openapi
 fetch-frog convert v2.schema.yaml -o v3.schema.json
 ```
 
-### Generate
+### Running the CLI
 
-Generate types from a schema, uses [openapi-ts.pages.dev/cli](https://openapi-ts.pages.dev/cli) under the hood
+- **npx / pnpm:** `npx fetch-frog generate …` or `pnpm fetch-frog generate …`
+- **npm scripts:** `npm run fetch-frog …` won't work, because `npm run` only runs scripts defined in `package.json`. Add a script instead:
 
-<!-- https://petstore3.swagger.io/ -->
+  ```json
+  {
+  	"scripts": {
+  		"generate:api": "fetch-frog generate http://127.0.0.1:8000/api/v1/openapi.json -o schema.d.ts"
+  	}
+  }
+  ```
 
-```bash
-fetch-frog generate v3.schema.json -o schema.d.ts
-```
+  Then run `npm run generate:api`. If you pass arguments through `npm run`, put them after `--` (`npm run generate:api -- …`), otherwise npm takes flags like `-o` for itself.
 
 ## Credits
 
