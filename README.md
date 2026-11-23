@@ -85,9 +85,9 @@ const { data } = await apiClient("/pet/{petId}/uploadImage", {
 
 ## Examples
 
-An example for creating a reusable wrapper composable, useful for authentication headers for example, can be found in [examples/composable-wrapper](./example/README.md#composable-wrapper)
+An example for creating a reusable wrapper composable, useful for authentication headers for example, can be found in the [Nuxt README](./packages/nuxt/README.md#composable-wrapper)
 
-Storing the body / path- or query parameters / response with types requires extracting a type from the generated openapi ts definitions. Some type helpers are exposed from fetch-frog to help with this: `ExtractResponse, ExtractBody, ExtractQueryParams, ExtractPathParams` where QueryParams and PathParams are reactive to help with UseFetch. For example usage, see [examples/type-extraction-helpers](./example/README.md#type-extraction-helpers)
+Storing the body / path- or query parameters / response with types requires extracting a type from the generated openapi ts definitions. Some type helpers are exposed from fetch-frog to help with this: `ExtractResponse, ExtractBody, ExtractQueryParams, ExtractPathParams`. For example usage, see [examples/type-extraction-helpers](./example/README.md#type-extraction-helpers)
 
 ## CLI tools
 

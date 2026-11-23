@@ -23,22 +23,22 @@ type CreatePetBody = ExtractBody<paths, "/pet", "post">;
 // GET /pet/findByStatus?status=available
 type PetQuery = ExtractQueryParams<paths, "/pet/findByStatus", "get">;
 // type PetQuery = {
-//     status: ("available" | "pending" | "sold")[] | ("available" | "pending" | "sold" | Ref<"available" | "pending" | "sold">)[] | Ref<("available" | "pending" | "sold")[]>;
+//     status: ("available" | "pending" | "sold")[];
 // }
 
 // GET /pet/67321
 type PetParams = ExtractPathParams<paths, "/pet/{petId}", "get">;
 // type PetParams = {
-//     petId: number | Ref<number>;
+//     petId: number;
 // }
 ```
 
-ExtractResponse defaults to 'application/json', but accepts an optional fourth type parameter:
+ExtractResponse defaults to status 200 and 'application/json'. Pass a status code and content type as the fourth and fifth type parameters to pick another response:
 
 ```ts
 // GET /pet/67321
 type PetJson = ExtractResponse<paths, "/pet/{petId}", "get">;
-type PetXml = ExtractResponse<paths, "/pet/{petId}", "get", "application/xml">;
+type PetXml = ExtractResponse<paths, "/pet/{petId}", "get", 200, "application/xml">;
 // type Pet = {
 //     id?: number | undefined;
 //     category?: {
