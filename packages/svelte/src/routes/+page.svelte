@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { createFetchClient } from 'fetch-frog';
 	import { createReactiveApi } from '$lib/use-fetch.svelte.js';
-	import type { paths } from '$lib/petstore.ts';
+	import type { paths } from './petstore.ts';
 	import { onMount } from 'svelte';
 
 	const apiClient = createFetchClient<paths>('', {});

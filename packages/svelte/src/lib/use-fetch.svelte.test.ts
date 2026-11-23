@@ -1,7 +1,7 @@
 import { describe, expect, vi } from 'vitest';
 import { createReactiveApi, type LoadingState } from './use-fetch.svelte.js';
 import { flushSync } from 'svelte';
-import { testWithEffect } from './test-utils.svelte.js';
+import { testWithEffect } from '../test/test-utils.svelte.js';
 
 describe('createReactiveApi', () => {
 	testWithEffect('sets success state and data when promise resolves', async () => {
@@ -61,6 +61,87 @@ describe('createReactiveApi', () => {
 		expect(api.status).toBe<'error' | LoadingState>('error');
 		expect(api.data).toBeNull();
 		expect(api.error).toBe(err);
+	});
+
+	testWithEffect('a rejected promise sets error state instead of staying loading', async () => {
+		const err = new Error('network down');
+		const spy = vi.fn(async (): Promise<{ data: string; error: null }> => {
+			throw err;
+		});
+		const api = createReactiveApi(spy, { immediate: false, watch: false });
+
+		await api.refresh();
+
+		expect(api.status).toBe<'error' | LoadingState>('error');
+		expect(api.error).toBe(err);
+	});
+
+	testWithEffect('a synchronous throw sets error state', async () => {
+		const err = new Error('bad input');
+		const api = createReactiveApi(
+			(): Promise<{ data: string; error: null }> => {
+				throw err;
+			},
+			{ immediate: false, watch: false }
+		);
+
+		await api.refresh();
+
+		expect(api.status).toBe<'error' | LoadingState>('error');
+		expect(api.error).toBe(err);
+	});
+
+	testWithEffect('awaiting resolves with the error state when the request throws', async () => {
+		const err = new Error('boom');
+		const { status, error } = await createReactiveApi(
+			async (): Promise<{ data: string; error: null }> => {
+				throw err;
+			},
+			{ watch: false }
+		);
+
+		expect(status).toBe<'error' | LoadingState>('error');
+		expect(error).toBe(err);
+	});
+
+	testWithEffect('a slow older response does not overwrite a newer one', async () => {
+		const resolvers: ((value: { data: string; error: null }) => void)[] = [];
+		const spy = vi.fn(
+			() => new Promise<{ data: string; error: null }>((resolve) => resolvers.push(resolve))
+		);
+		const api = createReactiveApi(spy, { immediate: false, watch: false });
+
+		const first = api.refresh();
+		const second = api.refresh();
+
+		resolvers[1]({ data: 'new', error: null });
+		await second;
+		expect(api.data).toBe('new');
+
+		resolvers[0]({ data: 'old', error: null });
+		await first;
+		expect(api.data).toBe('new');
+		expect(api.status).toBe<'success' | LoadingState>('success');
+	});
+
+	testWithEffect('refresh resolves only once a newer fetch has settled', async () => {
+		const resolvers: ((value: { data: string; error: null }) => void)[] = [];
+		const spy = vi.fn(
+			() => new Promise<{ data: string; error: null }>((resolve) => resolvers.push(resolve))
+		);
+		const api = createReactiveApi(spy, { immediate: false, watch: false });
+
+		let firstDone = false;
+		const first = api.refresh().then(() => (firstDone = true));
+		void api.refresh();
+
+		resolvers[0]({ data: 'old', error: null });
+		await new Promise((resolve) => setTimeout(resolve, 0));
+		expect(firstDone).toBe(false);
+
+		resolvers[1]({ data: 'new', error: null });
+		await first;
+		expect(api.data).toBe('new');
 	});
 
 	testWithEffect('refresh triggers subsequent calls', async () => {

@@ -38,41 +38,57 @@ export function createReactiveApi<T extends ApiResponse>(
 	let data: T['data'] | null = $state(null);
 	let error: T['error'] | null = $state(null);
 	let activated = $state(options.immediate!);
-	let fetchId = 0;
 
-	let initialRefresh: Promise<void> | null = null;
+	let fetchId = 0;
+	// Settles once the most recent fetch has settled.
+	let latest: Promise<void> = Promise.resolve();
 
 	$effect(() => {
 		if (!options.watch || !activated) {
 			return;
 		}
 
-		initialRefresh = effectFetch();
+		run();
 	});
 
-	async function effectFetch() {
+	/**
+	 * Start a fetch and resolve once the newest fetch has settled, also when a
+	 * later fetch superseded this one. `promise()` is called synchronously so
+	 * the effect above tracks its dependencies.
+	 */
+	function run(): Promise<void> {
 		const id = ++fetchId;
+		const isCurrent = () => id === fetchId;
 
 		status = 'loading';
 		error = null;
 
-		const result = await promise();
+		let pending: Promise<T>;
+		try {
+			pending = promise();
+		} catch (thrown) {
+			pending = Promise.reject(thrown);
+		}
 
-		if (id !== fetchId) return;
+		latest = pending
+			.then(
+				(result) => {
+					if (isCurrent()) applyResult(result);
+				},
+				(thrown: unknown) => {
+					if (!isCurrent()) return;
+					error = thrown as T['error'];
+					status = 'error';
+				}
+			)
+			.then(() => (isCurrent() ? undefined : latest));
 
-		applyResult(result);
+		return latest;
 	}
 
-	async function refresh() {
-		if (!activated) activated = true;
-
-		// invalidate any in-flight effect fetches
-		fetchId++;
-
-		status = 'loading';
-		error = null;
-
-		applyResult(await promise());
+	function refresh(): Promise<void> {
+		activated = true;
+		return run();
 	}
 
 	// Success is signalled by the absence of an error, not by truthy data:
@@ -87,7 +103,7 @@ export function createReactiveApi<T extends ApiResponse>(
 		}
 	}
 
-	return {
+	const facade: ReactiveApiFacade<T> = {
 		get data() {
 			return data;
 		},
@@ -97,42 +113,20 @@ export function createReactiveApi<T extends ApiResponse>(
 		get status() {
 			return status;
 		},
-		refresh,
+		refresh
+	};
 
+	// Awaiting waits for the current fetch, or starts one if none has run yet.
+	// It resolves with `facade`, which has no `then`, so awaiting can't loop.
+	const thenable = {
 		// oxlint-disable-next-line no-thenable
 		then(resolve: (value: ReactiveApiFacade<T>) => void, reject: (reason: unknown) => void) {
-			(async () => {
-				try {
-					await (initialRefresh ?? refresh());
-
-					resolve({
-						get data() {
-							return data;
-						},
-						get error() {
-							return error;
-						},
-						get status() {
-							return status;
-						},
-						refresh
-					} as ReactiveApiFacade<T>);
-				} catch (error) {
-					status = 'error';
-					reject({
-						get data() {
-							return null;
-						},
-						get error() {
-							return error;
-						},
-						get status() {
-							return status;
-						},
-						refresh
-					});
-				}
-			})();
+			(fetchId > 0 ? latest : refresh()).then(() => resolve(facade), reject);
 		}
-	} as ReactiveApiFacade<T> & Promise<ReactiveApiFacade<T>>;
+	};
+
+	return Object.defineProperties(
+		thenable,
+		Object.getOwnPropertyDescriptors(facade)
+	) as unknown as ReactiveApiFacade<T> & Promise<ReactiveApiFacade<T>>;
 }
