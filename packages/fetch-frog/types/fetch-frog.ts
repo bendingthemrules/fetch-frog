@@ -5,6 +5,7 @@ import type {
 	FetchResponseData,
 	FetchResponseError,
 	MethodOption,
+	OperationFor,
 	ParamsOption,
 	RequestBodyOption
 } from './utils.js';
@@ -13,9 +14,8 @@ export type FetchClient<Paths> = <
 	ReqT extends Extract<keyof Paths, string>,
 	Method extends Extract<keyof Paths[ReqT], string> | Uppercase<Extract<keyof Paths[ReqT], string>>,
 	LowercasedMethod extends Lowercase<Method> extends keyof Paths[ReqT] ? Lowercase<Method> : never,
-	DefaultMethod extends 'get' extends LowercasedMethod ? 'get' : LowercasedMethod,
-	DataT = FetchResponseData<Paths[ReqT][DefaultMethod]>,
-	ErrorT = FetchResponseError<Paths[ReqT][DefaultMethod]>
+	DataT = FetchResponseData<OperationFor<Paths[ReqT], LowercasedMethod>>,
+	ErrorT = FetchResponseError<OperationFor<Paths[ReqT], LowercasedMethod>>
 >(
 	url: ReqT,
 	options: ClientFetchOptions<Method, LowercasedMethod, Paths[ReqT]>
@@ -25,13 +25,8 @@ type ClientFetchOptions<
 	Method,
 	LowercasedMethod,
 	Params,
-	_Operation = 'get' extends LowercasedMethod
-		? 'get' extends keyof Params
-			? Params['get']
-			: never
-		: LowercasedMethod extends keyof Params
-			? Params[LowercasedMethod]
-			: never
+	// computed here rather than in the call signature, so TS doesn't try to infer it from `options`
+	_Operation = OperationFor<Params, LowercasedMethod>
 > = MethodOption<Method, Params> &
 	ParamsOption<_Operation> &
 	RequestBodyOption<_Operation> &

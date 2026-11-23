@@ -28,6 +28,18 @@ export type FetchResponseError<T> = FetchError<
 	FilterKeys<ErrorResponse<ResponseObjectMap<T>>, MediaType>
 >;
 
+/**
+ * The operation a request targets: `get` when no method is given,
+ * otherwise the (lowercased) method that was passed.
+ */
+export type OperationFor<PathItem, LowercasedMethod> = 'get' extends LowercasedMethod
+	? 'get' extends keyof PathItem
+		? PathItem['get']
+		: never
+	: LowercasedMethod extends keyof PathItem
+		? PathItem[LowercasedMethod]
+		: never;
+
 export type MethodOption<M, P> = 'get' extends keyof P ? { method?: M } : { method: M };
 
 export type ParamsOption<T> = T extends { parameters: infer P }

@@ -19,6 +19,7 @@ export type {
 	FetchResponseData,
 	FetchResponseError,
 	KeysOf,
+	OperationFor,
 	ParamsOption,
 	PickFrom,
 	RequestBodyOption
