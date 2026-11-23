@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { execSync, spawnSync } from 'node:child_process';
 import { expect, it, describe } from 'vitest';
+import { isUrl } from '../bin/utils.js';
 
 describe('cli', () => {
 	it('should generate open api spec v2 types', () => {
@@ -107,6 +108,16 @@ describe('cli', () => {
 				['convert', 'a.yaml', '-i', 'b.yaml', '-o', 'o.json'],
 				'either as an argument or with --input',
 				'fetch-frog convert --help'
+			],
+			[
+				['generate', 'a.yaml', '-o', 'out.json'],
+				'Output file must end in .ts',
+				'fetch-frog generate --help'
+			],
+			[
+				['convert', 'a.yaml', '-o', 'out.ts'],
+				'Output file must end in .json',
+				'fetch-frog convert --help'
 			]
 		])('%j fails with a usage hint', (args, message, hint) => {
 			const { code, stderr } = run(...args);
@@ -126,6 +137,32 @@ describe('cli', () => {
 			} finally {
 				fs.rmSync(outputPath, { force: true });
 			}
+		});
+
+		it('converts Swagger 2.0 to OpenAPI 3.0.1 JSON', () => {
+			const outputPath = `${currentDir}/output-convert.json`;
+			try {
+				const { code } = run('convert', `${currentDir}/openApi.v2.json`, '-o', outputPath);
+
+				expect(code).toBe(0);
+				expect(JSON.parse(fs.readFileSync(outputPath, 'utf8')).openapi).toBe('3.0.1');
+			} finally {
+				fs.rmSync(outputPath, { force: true });
+			}
+		});
+	});
+
+	describe('isUrl', () => {
+		it.each([
+			['https://example.com/openapi.json', true],
+			['http://127.0.0.1:8000/openapi.json', true],
+			['schema.yaml', false],
+			['./schemas/api.json', false],
+			['C:/schemas/api.yaml', false],
+			['C:\\schemas\\api.yaml', false],
+			['file:///tmp/api.yaml', false]
+		])('%s -> %s', (input, expected) => {
+			expect(isUrl(input)).toBe(expected);
 		});
 	});
 });

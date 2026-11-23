@@ -1,8 +1,8 @@
-export type Flags = {
-	input?: string;
-	output?: string;
-	help?: boolean;
-	version?: boolean;
+export type CommandArgs = {
+	/** Path or http(s) URL of the schema */
+	input: string;
+	/** Absolute path of the file to write */
+	output: string;
 };
 
-export type Command = (flags: Flags, positionals: string[]) => Promise<void> | void;
+export type Command = (args: CommandArgs) => Promise<void> | void;

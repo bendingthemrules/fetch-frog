@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import fs from 'node:fs';
+import path from 'node:path';
 import { parseArgs } from 'node:util';
 
 import convert from './commands/convert.js';
@@ -11,6 +12,7 @@ import generate from './commands/generate.js';
  * @property {import('./types').Command} run
  * @property {string} summary One line, shown in the command list
  * @property {string} usage
+ * @property {string} outputExtension Required extension of the output file
  * @property {string} details Shown by `fetch-frog <command> --help`
  * @property {string[]} examples
  */
@@ -21,8 +23,9 @@ const commands = {
 		run: generate,
 		summary: 'Generate TypeScript types from an OpenAPI or Swagger schema',
 		usage: 'fetch-frog generate <input> -o <output.ts>',
+		outputExtension: '.ts',
 		details:
-			'Generates types with openapi-typescript. Swagger 2.0 input is converted to\nOpenAPI 3.0.1 first. The output file must end in .ts.',
+			'Generates types with openapi-typescript. Swagger 2.0 input is converted to\nOpenAPI 3.0.1 first.',
 		examples: [
 			'fetch-frog generate schema.yaml -o schema.d.ts',
 			'fetch-frog generate https://example.com/openapi.json -o schema.d.ts'
@@ -32,7 +35,8 @@ const commands = {
 		run: convert,
 		summary: 'Convert a Swagger 2.0 schema to OpenAPI 3.0.1',
 		usage: 'fetch-frog convert <input> -o <output.json>',
-		details: 'The output file must end in .json.',
+		outputExtension: '.json',
+		details: 'OpenAPI 3 input is written out unchanged.',
 		examples: ['fetch-frog convert swagger.yaml -o openapi.json']
 	}
 };
@@ -74,7 +78,7 @@ function commandHelp(name) {
 Usage:
   ${c.usage}
 
-${c.details}
+${c.details} The output file must end in ${c.outputExtension}.
 ${INPUT_HELP}
 
 ${OPTIONS_HELP}
@@ -88,8 +92,17 @@ function version() {
 	return pkg.version;
 }
 
-/** An error the user can fix; printed with a pointer to the help. */
-class UsageError extends Error {}
+/** An error the user can fix; printed with a pointer to the relevant help. */
+class UsageError extends Error {
+	/**
+	 * @param {string} message
+	 * @param {string} [command] Point to this command's help instead of the general help
+	 */
+	constructor(message, command) {
+		super(message);
+		this.command = command;
+	}
+}
 
 /**
  * @param {string[]} argv
@@ -135,7 +148,7 @@ async function main(argv) {
 			console.info(mainHelp());
 			return false;
 		}
-		throw new UsageError('No command specified', { cause: 'main' });
+		throw new UsageError('No command specified');
 	}
 
 	const entry = commands[command];
@@ -151,28 +164,26 @@ async function main(argv) {
 		return false;
 	}
 
-	if (values.input !== undefined) {
-		if (positionals.length > 0) {
-			throw new UsageError('Pass the input either as an argument or with --input, not both', {
-				cause: command
-			});
-		}
-		positionals.push(values.input);
+	if (values.input !== undefined && positionals.length > 0) {
+		throw new UsageError('Pass the input either as an argument or with --input, not both', command);
 	}
 
-	if (positionals.length > 1) {
-		throw new UsageError(`Unexpected argument "${positionals[1]}"`, { cause: command });
-	}
+	const [input = values.input, unexpected] = positionals;
 
-	if (positionals.length === 0) {
-		throw new UsageError('No input file or URL specified', { cause: command });
+	if (unexpected !== undefined) {
+		throw new UsageError(`Unexpected argument "${unexpected}"`, command);
 	}
-
+	if (!input) {
+		throw new UsageError('No input file or URL specified', command);
+	}
 	if (!values.output) {
-		throw new UsageError('No output file specified (-o, --output)', { cause: command });
+		throw new UsageError('No output file specified (-o, --output)', command);
+	}
+	if (!values.output.endsWith(entry.outputExtension)) {
+		throw new UsageError(`Output file must end in ${entry.outputExtension}`, command);
 	}
 
-	await entry.run(values, positionals);
+	await entry.run({ input, output: path.resolve(process.cwd(), values.output) });
 	return true;
 }
 
@@ -188,9 +199,8 @@ main(process.argv.slice(2))
 	.catch((error) => {
 		console.error(`Error: ${error.message}`);
 		if (error instanceof UsageError) {
-			const hint =
-				typeof error.cause === 'string' && error.cause !== 'main' ? ` ${error.cause}` : '';
-			console.error(`Run "fetch-frog${hint} --help" for usage.`);
+			const target = error.command ? ` ${error.command}` : '';
+			console.error(`Run "fetch-frog${target} --help" for usage.`);
 		}
 		process.exit(1);
 	});
