@@ -3,7 +3,7 @@ import type {
 	ExtractPathParams,
 	ExtractQueryParams,
 	ExtractResponse,
-} from "../types/extractors";
+} from "../packages/fetch-frog/types/extractors";
 import type { paths } from "./petstore";
 
 type CreatePetBody = ExtractBody<paths, "/pet", "post">;

@@ -1,60 +1,26 @@
-import { toValue, type MaybeRef } from 'vue';
+import { toValue, unref, type MaybeRef } from 'vue';
 
 /**
- * Turn an object into FormData while keeping its object type
+ * Resolve a possibly reactive request body into plain data.
+ * The body itself may be a ref or getter; values nested inside it may be refs.
  */
-export function formdataBodySerializer<T extends Record<string, any>>(body?: T): T {
-	const formData = new FormData();
-
-	if (!body) return formData as unknown as T;
-
-	function append(obj: Record<string, any>, prefix?: string) {
-		for (const [k, maybeRefValue] of Object.entries(obj)) {
-			const v = toValue(maybeRefValue);
-			const key = prefix ? `${prefix}.${k}` : k;
-
-			if (Array.isArray(v)) {
-				for (const item of v) {
-					formData.append(key, toValue(item));
-				}
-			} else if (
-				v !== null &&
-				typeof v === 'object' &&
-				!(v instanceof File) &&
-				!(v instanceof Blob)
-			) {
-				append(v, key);
-			} else {
-				formData.append(key, toValue(v));
-			}
-		}
-	}
-
-	append(body);
-
-	// @ts-expect-error type tomfoolery
-	return formData;
+export function unwrapDeep(value: unknown): unknown {
+	return unwrapNested(toValue(value));
 }
 
-/**
- * Check if an object contains a file or a blob
- * If it was already transformed into FormData, skip
- */
-export function containsFileOrBlob(body?: Record<string, any> | FormData): boolean {
-	if (!body) return false;
-	if (body instanceof FormData) return false;
-
-	for (const maybeRefValue of Object.values(body)) {
-		const v = toValue(maybeRefValue);
-
-		if (v instanceof File || v instanceof Blob) return true;
-
-		if (v !== null && typeof v === 'object' && containsFileOrBlob(v)) return true;
-
-		// no need to check for arrays, they are handled by Object.values
+function unwrapNested(value: unknown): unknown {
+	const v = unref(value);
+	if (Array.isArray(v)) return v.map(unwrapNested);
+	if (isPlainObject(v)) {
+		return Object.fromEntries(Object.entries(v).map(([k, x]) => [k, unwrapNested(x)]));
 	}
+	return v;
+}
 
-	return false;
+function isPlainObject(value: unknown): value is Record<string, unknown> {
+	if (value === null || typeof value !== 'object') return false;
+	const proto = Object.getPrototypeOf(value);
+	return proto === Object.prototype || proto === null;
 }
 
 /**

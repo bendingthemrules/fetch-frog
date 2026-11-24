@@ -1,8 +1,8 @@
 import { useFetch, type UseFetchOptions } from 'nuxt/app';
 import { computed, toValue } from 'vue';
 import { defu } from 'defu';
-import type { UseFetchClient } from './types/use-fetch';
-import { fillPath } from './utils';
+import type { UseFetchClient, UseFetchClientDefaults } from './types/use-fetch';
+import { fillPath, unwrapDeep } from './utils';
 
 /**
  * Create a reactive fetch client
@@ -28,14 +28,21 @@ import { fillPath } from './utils';
  */
 export function createUseFetchClient<Paths, Lazy extends boolean = boolean>(
 	baseUrl: string,
-	defaults: UseFetchOptions<any>,
+	defaults: UseFetchClientDefaults,
 	lazy?: Lazy
 ): UseFetchClient<Paths, Lazy> {
 	return (url: string | (() => string), options: any) => {
 		const filledPath = computed(() => fillPath(baseUrl + toValue(url), options.path));
 
-		const merged = defu(lazy ? { ...options, lazy } : options, defaults);
+		const { bodySerializer, ...merged } = defu(lazy ? { ...options, lazy } : options, defaults);
 
-		return useFetch(filledPath, merged);
+		// Serialize inside a computed so a reactive body still triggers a refetch,
+		// and Nuxt builds its cache key from the serialized body.
+		if (bodySerializer && merged.body !== undefined) {
+			const body = merged.body;
+			merged.body = computed(() => bodySerializer(unwrapDeep(body)));
+		}
+
+		return useFetch(filledPath, merged as UseFetchOptions<any>);
 	};
 }

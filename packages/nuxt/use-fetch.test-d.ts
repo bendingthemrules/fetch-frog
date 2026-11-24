@@ -1,4 +1,6 @@
 import { expectTypeOf } from 'vitest';
+import { ref } from 'vue';
+import { formdataSerializer } from './index';
 import type { UseFetchClient } from './types/use-fetch';
 import type { paths } from './test/petstore';
 
@@ -44,3 +46,27 @@ client('/pet/{petId}', {
 
 // On an operation without any spec header params, arbitrary headers still work.
 client('/pet/{petId}', { path: { petId: 1 }, headers: { 'x-trace-id': 'abc' } });
+
+// bodySerializer: built-in serializers are accepted without casting...
+client('/pet', {
+	method: 'POST',
+	body: { name: 'doggie', photoUrls: [] },
+	bodySerializer: formdataSerializer
+});
+
+// ...a custom one receives the unwrapped body type, even if the body holds refs...
+client('/pet', {
+	method: 'POST',
+	body: { name: ref('doggie'), photoUrls: [] },
+	bodySerializer: (body) => {
+		expectTypeOf(body.name).toEqualTypeOf<string>();
+		return JSON.stringify(body);
+	}
+});
+
+// ...and operations without a request body don't accept one.
+client('/pet/{petId}', {
+	path: { petId: 1 },
+	// @ts-expect-error GET /pet/{petId} has no request body
+	bodySerializer: formdataSerializer
+});

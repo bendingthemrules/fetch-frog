@@ -1,4 +1,10 @@
-export { formdataBodySerializer } from './utils.js';
+export { containsFileOrBlob, formdataBodySerializer } from './utils.js';
+export {
+	formdataSerializer,
+	urlencodedSerializer,
+	jsonSerializer,
+	type BodySerializer
+} from './serializers.js';
 export { createFetchClient } from './fetch-frog.js';
 
 export type {
@@ -9,12 +15,14 @@ export type {
 } from './types/extractors.js';
 
 export type {
+	BodySerializerOption,
 	FetchResponseData,
 	FetchResponseError,
 	KeysOf,
+	OperationFor,
 	ParamsOption,
 	PickFrom,
 	RequestBodyOption
 } from './types/utils.js';
 
-export type { FetchClient } from './types/fetch-frog.js';
+export type { FetchClient, FetchClientDefaults } from './types/fetch-frog.js';
